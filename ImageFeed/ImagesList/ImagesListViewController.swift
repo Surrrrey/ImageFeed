@@ -38,9 +38,9 @@ final class ImagesListViewController: UIViewController {
         cell.dateLabelOutlet.text = dateFormatter.string(from: Date())
         
         if indexPath.row % 2 == 0 {
-            cell.likeButtonOutlet.setImage(UIImage(named: "Heart Active"), for: .normal)
+            cell.likeButtonOutlet.setImage(UIImage(resource: .heartActive), for: .normal)
         } else {
-            cell.likeButtonOutlet.setImage(UIImage(named: "Heart No Active"), for: .normal)
+            cell.likeButtonOutlet.setImage(UIImage(resource: .heartNoActive), for: .normal)
         }
     }
 }
@@ -50,7 +50,7 @@ final class ImagesListViewController: UIViewController {
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        photosName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -69,7 +69,7 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        //todo
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -78,6 +78,8 @@ extension ImagesListViewController: UITableViewDelegate {
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageWidth = image.size.width
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
+        
+        guard imageWidth != 0 else { return 0 }
         
         let scale = imageViewWidth / imageWidth
         
