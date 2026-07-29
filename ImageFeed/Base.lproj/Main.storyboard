@@ -16,7 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="jZH-kL-DIH">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="jZH-kL-DIH">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" name="YP Black (iOS)"/>
                                 <prototypes>
@@ -52,9 +52,16 @@
                                                     <color key="textColor" name="YP White (iOS)"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="lhJ-49-zh8" userLabel="GradientLayer">
+                                                    <rect key="frame" x="0.0" y="187" width="393" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="rjQ-g7-rzr"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="pUO-Un-oML" secondAttribute="bottom" constant="4" id="46c-Tk-yJt"/>
+                                                <constraint firstAttribute="trailing" secondItem="lhJ-49-zh8" secondAttribute="trailing" id="4co-EE-oop"/>
                                                 <constraint firstAttribute="trailing" secondItem="pUO-Un-oML" secondAttribute="trailing" constant="16" id="5fe-tg-7w7"/>
                                                 <constraint firstItem="Jxj-9L-xLA" firstAttribute="leading" secondItem="pUO-Un-oML" secondAttribute="leading" constant="8" id="I50-Nu-Rn7"/>
                                                 <constraint firstItem="O4s-mE-ZQG" firstAttribute="top" secondItem="pUO-Un-oML" secondAttribute="top" id="NHV-Ls-lGf"/>
@@ -63,12 +70,15 @@
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Jxj-9L-xLA" secondAttribute="trailing" constant="8" id="YDP-g1-K7a"/>
                                                 <constraint firstItem="pUO-Un-oML" firstAttribute="leading" secondItem="KgS-GN-cIC" secondAttribute="leading" constant="16" id="aqD-ET-cjb"/>
                                                 <constraint firstItem="pUO-Un-oML" firstAttribute="bottom" secondItem="Jxj-9L-xLA" secondAttribute="bottom" constant="8" id="i9h-GZ-Fg5"/>
+                                                <constraint firstItem="pUO-Un-oML" firstAttribute="bottom" secondItem="lhJ-49-zh8" secondAttribute="bottom" id="izO-ZZ-hhZ"/>
+                                                <constraint firstItem="lhJ-49-zh8" firstAttribute="leading" secondItem="KgS-GN-cIC" secondAttribute="leading" id="sKl-QU-jG2"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="YP Background (iOS)"/>
                                         <connections>
                                             <outlet property="cellImageOutlet" destination="pUO-Un-oML" id="4ID-ue-Tdu"/>
                                             <outlet property="dateLabelOutlet" destination="Jxj-9L-xLA" id="uVk-V8-pew"/>
+                                            <outlet property="gradientLayer" destination="lhJ-49-zh8" id="Xz9-LR-IMX"/>
                                             <outlet property="likeButtonOutlet" destination="O4s-mE-ZQG" id="po2-bJ-8cq"/>
                                         </connections>
                                     </tableViewCell>

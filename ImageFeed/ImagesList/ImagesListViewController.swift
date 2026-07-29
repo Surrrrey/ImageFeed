@@ -33,6 +33,7 @@ final class ImagesListViewController: UIViewController {
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         guard let image = UIImage(named: "\(indexPath.row)") else { return }
         
+        cell.setupGradient()
         cell.cellImageOutlet.image = image
         cell.dateLabelOutlet.text = dateFormatter.string(from: Date())
         
