@@ -19,8 +19,8 @@
                         <color key="selectedImageTintColor" name="YP White (iOS)"/>
                     </tabBar>
                     <connections>
-                        <segue destination="spy-pz-ZfZ" kind="relationship" relationship="viewControllers" id="Pze-SK-Aoo"/>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="hZG-Ho-LhR"/>
+                        <segue destination="spy-pz-ZfZ" kind="relationship" relationship="viewControllers" id="Pze-SK-Aoo"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qpB-p3-Gj2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -34,71 +34,9 @@
                     <view key="view" contentMode="scaleToFill" id="AOW-oL-aZi">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.crop.circle.fill" translatesAutoresizingMaskIntoConstraints="NO" id="yDO-SY-Xmo" userLabel="Profile Avatar View">
-                                <rect key="frame" x="16" y="150" width="70" height="70"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="70" id="Ins-w1-MeJ"/>
-                                    <constraint firstAttribute="width" constant="70" id="oRU-Bl-A4f"/>
-                                </constraints>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Имя Фамилия" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rdg-sv-gM1" userLabel="Profile Name label">
-                                <rect key="frame" x="16" y="228" width="361" height="27.666666666666657"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
-                                <color key="textColor" name="YP White (iOS)"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, World!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yxf-3f-y8e" userLabel="Profile Description label">
-                                <rect key="frame" x="16" y="287.33333333333331" width="361" height="15.666666666666686"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" name="YP White (iOS)"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@login" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N3J-y6-xMq" userLabel="Login label">
-                                <rect key="frame" x="16" y="263.66666666666669" width="361" height="15.666666666666686"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <color key="textColor" name="YP Gray (iOS)"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t2F-i3-1Ox">
-                                <rect key="frame" x="333" y="163" width="44" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="u3P-Wx-yfH"/>
-                                    <constraint firstAttribute="width" constant="44" id="xxN-yX-I5Y"/>
-                                </constraints>
-                                <color key="tintColor" name="YP Red (iOS)"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="Exit"/>
-                                <connections>
-                                    <action selector="logoutButtonAction:" destination="spy-pz-ZfZ" eventType="touchUpInside" id="2At-XU-8d6"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="agD-wh-nDK"/>
-                        <color key="backgroundColor" name="YP Black (iOS)"/>
-                        <constraints>
-                            <constraint firstItem="N3J-y6-xMq" firstAttribute="top" secondItem="Rdg-sv-gM1" secondAttribute="bottom" constant="8" id="8in-9c-ulW"/>
-                            <constraint firstItem="agD-wh-nDK" firstAttribute="trailing" secondItem="N3J-y6-xMq" secondAttribute="trailing" constant="16" id="ES5-P8-kzX"/>
-                            <constraint firstItem="yDO-SY-Xmo" firstAttribute="leading" secondItem="agD-wh-nDK" secondAttribute="leading" constant="16" id="Ej5-2v-sQU"/>
-                            <constraint firstItem="Rdg-sv-gM1" firstAttribute="top" secondItem="yDO-SY-Xmo" secondAttribute="bottom" constant="8" id="FUl-ny-an1"/>
-                            <constraint firstItem="agD-wh-nDK" firstAttribute="trailing" secondItem="yxf-3f-y8e" secondAttribute="trailing" constant="16" id="Jrd-9W-wN2"/>
-                            <constraint firstItem="yxf-3f-y8e" firstAttribute="leading" secondItem="agD-wh-nDK" secondAttribute="leading" constant="16" id="KZk-rb-yEx"/>
-                            <constraint firstItem="agD-wh-nDK" firstAttribute="trailing" secondItem="t2F-i3-1Ox" secondAttribute="trailing" constant="16" id="NOs-Y3-AHd"/>
-                            <constraint firstItem="Rdg-sv-gM1" firstAttribute="leading" secondItem="agD-wh-nDK" secondAttribute="leading" constant="16" id="PGY-RH-KaK"/>
-                            <constraint firstItem="t2F-i3-1Ox" firstAttribute="top" secondItem="agD-wh-nDK" secondAttribute="top" constant="45" id="RRh-Qe-SD9"/>
-                            <constraint firstItem="N3J-y6-xMq" firstAttribute="leading" secondItem="agD-wh-nDK" secondAttribute="leading" constant="16" id="TMb-Ny-0pf"/>
-                            <constraint firstItem="yxf-3f-y8e" firstAttribute="top" secondItem="N3J-y6-xMq" secondAttribute="bottom" constant="8" id="UNb-Ec-4S3"/>
-                            <constraint firstItem="agD-wh-nDK" firstAttribute="trailing" secondItem="Rdg-sv-gM1" secondAttribute="trailing" constant="16" id="ZY0-sH-O96"/>
-                            <constraint firstItem="yDO-SY-Xmo" firstAttribute="top" secondItem="agD-wh-nDK" secondAttribute="top" constant="32" id="dkh-6p-06D"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="Active Profile" id="JVz-C5-wbX"/>
-                    <connections>
-                        <outlet property="profileAvatar" destination="yDO-SY-Xmo" id="xSp-Ha-H9c"/>
-                        <outlet property="profileDescription" destination="yxf-3f-y8e" id="IUX-0i-Wld"/>
-                        <outlet property="profileLogin" destination="N3J-y6-xMq" id="hZv-vH-lh6"/>
-                        <outlet property="profileName" destination="Rdg-sv-gM1" id="iFk-kp-Edq"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ggi-lo-86b" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -282,21 +220,13 @@
         <image name="Active Main" width="30" height="30"/>
         <image name="Active Profile" width="30" height="30"/>
         <image name="Backward" width="24" height="24"/>
-        <image name="Exit" width="44" height="44"/>
         <image name="Heart No Active" width="44" height="44"/>
         <image name="Sharing" width="50" height="50"/>
-        <image name="person.crop.circle.fill" width="70" height="70"/>
         <namedColor name="YP Background (iOS)">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="YP Black (iOS)">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="YP Gray (iOS)">
-            <color red="0.68235294117647061" green="0.68627450980392157" blue="0.70588235294117652" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="YP Red (iOS)">
-            <color red="0.96078431372549022" green="0.41960784313725491" blue="0.42352941176470588" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="YP White (iOS)">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
