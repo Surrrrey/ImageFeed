@@ -26,7 +26,7 @@ final class ProfileViewController: UIViewController {
         configurationButton()
     }
     
-    // MARK: - Private Methods
+    // MARK: - Layout Methods
     
     private func configurationProfileImage(image: UIImage) {
         profileImageView.image = image
@@ -84,15 +84,6 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.textColor = color
-        label.font = font
-        
-        return label
-    }
-    
     private func configurationButton() {
         button = .systemButton(with: UIImage(resource: .exit), target: self, action: #selector(buttonTap))
         button.tintColor = .ypRedIOS
@@ -106,6 +97,17 @@ final class ProfileViewController: UIViewController {
             button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             button.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor)
         ])
+    }
+    
+    // MARK: - Private Methods
+    
+    private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.textColor = color
+        label.font = font
+        
+        return label
     }
     
     @objc private func buttonTap(_ sender: UIButton) {
