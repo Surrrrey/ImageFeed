@@ -77,19 +77,27 @@
                                     <wkPreferences key="preferences"/>
                                 </wkWebViewConfiguration>
                             </wkWebView>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="mCZ-kr-iSF">
+                                <rect key="frame" x="0.0" y="172" width="393" height="4"/>
+                                <color key="progressTintColor" name="YP Black (iOS)"/>
+                            </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="gq6-Dw-0Mz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="mCZ-kr-iSF" firstAttribute="leading" secondItem="gq6-Dw-0Mz" secondAttribute="leading" id="9Nm-UV-uYX"/>
                             <constraint firstAttribute="bottom" secondItem="4Vj-hC-1GI" secondAttribute="bottom" id="KYi-DG-Y2P"/>
                             <constraint firstItem="4Vj-hC-1GI" firstAttribute="trailing" secondItem="Tbg-o1-4Wf" secondAttribute="trailing" id="c7e-7O-B3v"/>
                             <constraint firstItem="4Vj-hC-1GI" firstAttribute="top" secondItem="gq6-Dw-0Mz" secondAttribute="top" id="hK0-pJ-WZO"/>
                             <constraint firstItem="4Vj-hC-1GI" firstAttribute="leading" secondItem="Tbg-o1-4Wf" secondAttribute="leading" id="icW-tI-9kG"/>
+                            <constraint firstItem="mCZ-kr-iSF" firstAttribute="top" secondItem="gq6-Dw-0Mz" secondAttribute="top" id="pLq-na-vNb"/>
+                            <constraint firstItem="gq6-Dw-0Mz" firstAttribute="trailing" secondItem="mCZ-kr-iSF" secondAttribute="trailing" id="ua5-DE-2W1"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="GDL-5L-TjU"/>
                     <connections>
-                        <outlet property="webView" destination="4Vj-hC-1GI" id="p2e-I8-HkW"/>
+                        <outlet property="progressView" destination="mCZ-kr-iSF" id="Us0-fH-1sr"/>
+                        <outlet property="webView" destination="4Vj-hC-1GI" id="kUQ-nu-HJ8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HxB-UZ-HUx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

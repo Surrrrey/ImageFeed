@@ -7,24 +7,53 @@ final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
     
+    private var isObserverActive = Bool(false)
+    
     // MARK: - Outlets
     
-    @IBOutlet private var webView: WKWebView!
+    @objc @IBOutlet private var webView: WKWebView!
+    
+    @IBOutlet private var progressView: UIProgressView!
     
     // MARK: - Lifecycle
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        subscribeWebView()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
+        progressView.progress = 0.0
         loadAuthView()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        unsubscribeWebView()
+    }
+    
+    override func observeValue(
+        forKeyPath keyPath: String?,
+        of object: Any?,
+        change: [NSKeyValueChangeKey : Any]?,
+        context: UnsafeMutableRawPointer?) {
+            if keyPath == #keyPath(WKWebView.estimatedProgress) {
+                updateProgress()
+            } else {
+                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+            }
     }
     
     // MARK: - Private Methods
     
     private func loadAuthView() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
-            print("URLComponentsConfigureError")
+        guard var urlComponents = URLComponents(string: WebConstants.unsplashAuthorizeURLString) else {
+            print("URLComponentsForAuthConfigureError")
             return
         }
         
@@ -36,12 +65,37 @@ final class WebViewViewController: UIViewController {
         ]
         
         guard let url = urlComponents.url else {
-            print("URLError")
+            print("AuthURLError")
             return
         }
         
         let request = URLRequest(url: url)
         webView.load(request)
+    }
+    
+    private func updateProgress() {
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
+    
+    private func subscribeWebView() {
+        guard isObserverActive == false else { return }
+        
+        webView.addObserver(
+            self,
+            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+            options: .new,
+            context: nil)
+        
+        isObserverActive = true
+    }
+    
+    private func unsubscribeWebView() {
+        guard isObserverActive == true else { return }
+        
+        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+        
+        isObserverActive = false
     }
 }
 
@@ -54,9 +108,10 @@ extension WebViewViewController: WKNavigationDelegate {
                          decisionHandler: @escaping @MainActor (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
         if let code = code(from: navigationAction) {
             //TODO: process code
-            decisionHandler(.cancel)
+            
+            //decisionHandler(.cancel)
         } else {
-            decisionHandler(.allow)
+            //decisionHandler(.allow)
         }
     }
     

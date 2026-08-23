@@ -15,6 +15,8 @@ final class AuthViewController: UIViewController {
     
     private let segueWebViewId = "ShowWebView"
     
+    private let oAuth2Service = OAuth2FetchService.shared
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -90,7 +92,19 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        <#code#>
+        oAuth2Service.fetchOAuthToken(code: code) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let token):
+                // TODO: AUTHENTICATE
+                break
+            case .failure(let error):
+                break
+            }
+            
+            
+            
+        }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {

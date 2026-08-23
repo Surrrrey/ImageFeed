@@ -4,7 +4,7 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - Properties
     
-    private var profileImage = UIImage(systemName: "person.circle.fill")
+    private var profileImage = UIImage(systemName: "person.crop.circle.fill")
     private var profileImageView = UIImageView()
     
     private var profileName = UILabel()
