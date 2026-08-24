@@ -34,7 +34,7 @@ final class OAuth2FetchService {
     }
     
     func fetchOAuthToken(code: String,
-    completion: @escaping (Swift.Result<String, Error>) -> Void) {
+                         completion: @escaping (Swift.Result<String, Error>) -> Void) {
         let urlRequest = makeAuthTokenRequest(code: code)
         
         guard let urlRequest else { return }

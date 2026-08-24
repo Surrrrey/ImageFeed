@@ -17,18 +17,18 @@ final class WebViewViewController: UIViewController {
     
     // MARK: - Lifecycle
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        subscribeWebView()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
         progressView.progress = 0.0
         loadAuthView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        subscribeWebView()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -47,7 +47,7 @@ final class WebViewViewController: UIViewController {
             } else {
                 super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             }
-    }
+        }
     
     // MARK: - Private Methods
     
@@ -103,15 +103,14 @@ final class WebViewViewController: UIViewController {
 
 extension WebViewViewController: WKNavigationDelegate {
     
-    private func webView(_ webView: WKWebView,
-                         decidePolicyFor navigationAction: WKNavigationAction,
-                         decisionHandler: @escaping @MainActor (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+    func webView(_ webView: WKWebView,
+                 decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
-            //TODO: process code
-            
-            //decisionHandler(.cancel)
+            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            decisionHandler(.cancel)
         } else {
-            //decisionHandler(.allow)
+            decisionHandler(.allow)
         }
     }
     

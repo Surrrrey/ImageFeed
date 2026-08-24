@@ -2,7 +2,7 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Layout
     
     private let backgroundColor = UIColor(resource: .ypBlackIOS)
     
@@ -13,9 +13,13 @@ final class AuthViewController: UIViewController {
     private let buttonText = "Войти"
     private let buttonFont = UIFont.systemFont(ofSize: 17, weight: .bold)
     
+    // MARK: - Properties
+    
     private let segueWebViewId = "ShowWebView"
     
     private let oAuth2Service = OAuth2FetchService.shared
+    
+    weak var delegate:AuthViewControllerDelegate?
     
     // MARK: - Lifecycle
     
@@ -28,7 +32,7 @@ final class AuthViewController: UIViewController {
         configBackButton()
     }
     
-    // MARK: - Public Methods
+    // MARK: - Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == segueWebViewId {
@@ -92,24 +96,22 @@ final class AuthViewController: UIViewController {
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        vc.dismiss(animated: true)
+        
         oAuth2Service.fetchOAuthToken(code: code) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let token):
-                // TODO: AUTHENTICATE
+            case .success:
+                self.delegate?.didAuthenticate(self)
                 break
-            case .failure(let error):
+            case .failure:
+                // TODO: Error handling
                 break
             }
-            
-            
-            
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
     }
-    
-    
 }

@@ -15,34 +15,34 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
     
     private let storage: UserDefaults = .standard
     
-    var accessToken: String {
+    var accessToken: String? {
         get {
-            storage.string(forKey: Keys.accessToken.rawValue) ?? ""
+            storage.string(forKey: Keys.accessToken.rawValue)
         }
         set {
             storage.set(newValue, forKey: Keys.accessToken.rawValue)
         }
     }
     
-    var tokenType: String {
+    var tokenType: String? {
         get {
-            storage.string(forKey: Keys.tokenType.rawValue) ?? ""
+            storage.string(forKey: Keys.tokenType.rawValue)
         }
         set {
             storage.set(newValue, forKey: Keys.tokenType.rawValue)
         }
     }
     
-    var scope: String {
+    var scope: String? {
         get {
-            storage.string(forKey: Keys.scope.rawValue) ?? ""
+            storage.string(forKey: Keys.scope.rawValue)
         }
         set {
             storage.set(newValue, forKey: Keys.scope.rawValue)
         }
     }
     
-    var createdId: Int {
+    var createdId: Int? {
         get {
             storage.integer(forKey: Keys.createdId.rawValue)
         }
