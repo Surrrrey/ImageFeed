@@ -57,7 +57,9 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configurationProfileLogin(login: String) {
-        profileLogin = configLabel(text: login, color: .ypGrayIOS, font: .systemFont(ofSize: 13, weight: .regular))
+        profileLogin = configLabel(text: login,
+                                   color: .ypGrayIOS,
+                                   font: .systemFont(ofSize: 13, weight: .regular))
         profileLogin.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(profileLogin)

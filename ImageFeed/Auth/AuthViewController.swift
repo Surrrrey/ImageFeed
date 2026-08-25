@@ -7,11 +7,13 @@ final class AuthViewController: UIViewController {
     private let backgroundColor = UIColor(resource: .ypBlackIOS)
     
     private let logoView = UIImageView(image: .logoOfUnsplash)
+    private let logoWidthAndHeight = 60.0
     
     private let button = UIButton()
     private let buttonColor = UIColor(resource: .ypWhiteIOS)
     private let buttonText = "Войти"
     private let buttonFont = UIFont.systemFont(ofSize: 17, weight: .bold)
+    private let buttonCornerRadius = 16.0
     
     // MARK: - Properties
     
@@ -19,14 +21,14 @@ final class AuthViewController: UIViewController {
     
     private let oAuth2Service = OAuth2FetchService.shared
     
-    weak var delegate:AuthViewControllerDelegate?
+    weak var delegate: AuthViewControllerDelegate?
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = self.backgroundColor // Я знаю что у меня на экране сейчас отображается две картинки и две кнопки, я сверстал экран кодом сразу на будущее, а как делать переход без сториборда пока не учили
+        view.backgroundColor = self.backgroundColor // TODO: // Я знаю что у меня на экране сейчас отображается две картинки и две кнопки, я сверстал экран кодом сразу на будущее, а как делать переход без сториборда пока не учили //
         configLogoView()
         configAuthButton()
         configBackButton()
@@ -55,8 +57,8 @@ final class AuthViewController: UIViewController {
         view.addSubview(logoView)
         
         NSLayoutConstraint.activate([
-            logoView.widthAnchor.constraint(equalToConstant: 60),
-            logoView.heightAnchor.constraint(equalToConstant: 60),
+            logoView.widthAnchor.constraint(equalToConstant: logoWidthAndHeight),
+            logoView.heightAnchor.constraint(equalToConstant: logoWidthAndHeight),
             logoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
@@ -68,12 +70,13 @@ final class AuthViewController: UIViewController {
         button.setTitleColor(.ypBlackIOS, for: .normal)
         button.titleLabel?.textColor = .ypBlackIOS
         button.titleLabel?.font = buttonFont
-        button.layer.cornerRadius = 16
+        button.layer.cornerRadius = buttonCornerRadius
         button.translatesAutoresizingMaskIntoConstraints = false
         
-        button.addAction(UIAction {_ in
-            self.performSegue(withIdentifier: self.segueWebViewId, sender: self)},
-                         for: .touchUpInside)
+        button.addAction(UIAction { [weak self] _ in
+            guard let self else { return }
+            self.performSegue(withIdentifier: self.segueWebViewId, sender: self)
+        }, for: .touchUpInside)
         
         view.addSubview(button)
         
@@ -99,7 +102,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         vc.dismiss(animated: true)
         
         oAuth2Service.fetchOAuthToken(code: code) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 self.delegate?.didAuthenticate(self)
