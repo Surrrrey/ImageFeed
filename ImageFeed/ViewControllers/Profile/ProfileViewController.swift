@@ -22,13 +22,13 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configurationButton()
 //        fetchProfile()
 
         view.backgroundColor = .ypBlackIOS
         if let profileImage { configurationProfileImage(image: profileImage) }
         
         configureUILabels(with: profileService.profile)
+        configurationButton()
     }
     
     // MARK: - Layout Methods
@@ -108,8 +108,18 @@ final class ProfileViewController: UIViewController {
     private func configureUILabels(with profile: ProfileUI?) {
         guard let profile = profileService.profile else { return }
         
-        configurationProfileName(name: profile.name)
+        var name = ""
+        
+        if let firstName = profile.firstName {
+            name.append(firstName)
+        }
+        if let lastName = profile.lastName {
+            name.append(" " + lastName)
+        }
+        
+        configurationProfileName(name: name)
         configurationProfileLogin(login: "@" + profile.login)
+        
         guard let bio = profile.bio else { return }
         configurationProfileDescription(description: bio)
     }

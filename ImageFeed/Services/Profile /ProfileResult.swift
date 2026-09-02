@@ -2,8 +2,8 @@ import Foundation
 
 struct ProfileResult: Codable {
     let login: String
-    let firstName: String
-    let lastName: String
+    let firstName: String?
+    let lastName: String?
     let bio: String?
     
     private enum CodingKeys: String, CodingKey {

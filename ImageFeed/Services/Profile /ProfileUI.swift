@@ -4,7 +4,9 @@ struct ProfileUI {
         
     var login: String
     
-    var name: String
+    var firstName: String?
+    
+    var lastName: String?
     
     var bio: String?
     

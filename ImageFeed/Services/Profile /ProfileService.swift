@@ -8,7 +8,7 @@ private enum ProfileServiceError: Error {
 final class ProfileService {
     
     // MARK: - Singleton
-
+    
     static let shared = ProfileService()
     private init() {}
     
@@ -24,8 +24,6 @@ final class ProfileService {
     
     func fetchProfile(token: String,
                       completion: @escaping (Result<ProfileUI, Error>) -> Void) {
-        assert(Thread.isMainThread)
-        
         sessionTask?.cancel()
         
         guard let request = makeProfileRequest(token: token)
@@ -39,10 +37,10 @@ final class ProfileService {
             case .success(let data):
                 do {
                     let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
-                    
                     let profileUI = ProfileUI(
                         login: profileResult.login,
-                        name: "\(profileResult.firstName) \(profileResult.lastName)",
+                        firstName: profileResult.firstName,
+                        lastName: profileResult.lastName,
                         bio: profileResult.bio)
                     
                     self?.profile = profileUI
@@ -62,12 +60,12 @@ final class ProfileService {
         self.sessionTask = task
         task.resume()
     }
-
+    
     // MARK: - Private Methods
     
     private func makeProfileRequest(token: String) -> URLRequest? {
         guard
-            let profileUrl = URL(string: Constants.defaultBaseURLString + Constants.userProfile)
+            let profileUrl = URL(string: "https://api.unsplash.com/me")
         else { print("URLForProfileRequestConfigureError")
             return nil }
         
