@@ -2,28 +2,33 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Layout
     
     private var profileImage = UIImage(systemName: "person.crop.circle.fill")
     private var profileImageView = UIImageView()
     
     private var profileName = UILabel()
     private var profileLogin = UILabel()
-    private var profileDescription: UILabel?
+    private var profileDescription = UILabel()
     
     private var button = UIButton()
+    
+    // MARK: - Properties
+
+    private let profileService = ProfileService.shared
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configurationButton()
+//        fetchProfile()
+
         view.backgroundColor = .ypBlackIOS
         if let profileImage { configurationProfileImage(image: profileImage) }
-        configurationProfileName(name: "Имя Фамилия")
-        configurationProfileLogin(login: "@login")
-        configurationProfileDescription(description: "Hello, World!")
-        configurationButton()
+        
+        configureUILabels(with: profileService.profile)
     }
     
     // MARK: - Layout Methods
@@ -74,7 +79,6 @@ final class ProfileViewController: UIViewController {
     private func configurationProfileDescription(description: String) {
         profileDescription = configLabel(text: description, color: .ypWhiteIOS, font: .systemFont(ofSize: 13, weight: .regular))
         
-        guard let profileDescription else { return }
         profileDescription.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(profileDescription)
@@ -101,6 +105,15 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
+    private func configureUILabels(with profile: ProfileUI?) {
+        guard let profile = profileService.profile else { return }
+        
+        configurationProfileName(name: profile.name)
+        configurationProfileLogin(login: "@" + profile.login)
+        guard let bio = profile.bio else { return }
+        configurationProfileDescription(description: bio)
+    }
+    
     // MARK: - Private Methods
     
     private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
@@ -115,4 +128,36 @@ final class ProfileViewController: UIViewController {
     @objc private func buttonTap(_ sender: UIButton) {
         //todo
     }
+    
+//    private func fetchProfile() {
+//        UIBlockingProgressHUD.show()
+//
+//        guard let token = OAuth2TokenStorage().accessToken else { return } //TODO: МОЖНО ПЕРЕБРОСИТЬ ПОЛЬЗОВАТЕЛЯ НА ЭКРАН С АВТОРИЗАЦИЕЙ
+//
+//        profileService.fetchProfile(token: token) { [weak self] result in
+//            UIBlockingProgressHUD.dismiss()
+//
+//            guard let self else { return }
+//
+//            switch result {
+//            case .success(let profile):
+//                updateProfileUI(from: profile)
+//            case .failure(let error):
+//                // TODO: Обработать ошибку загрузки профиля
+//                print("LoadProfileError: \(error)")
+//            }
+//        }
+//    } ЗАКОМЕНТИЛ НА ВСЯКИЙ СЛУЧАЙ
+//
+//    private func updateProfileUI(from profile: ProfileUI) {
+//        profileUI?.name = profile.name.isEmpty
+//        ? "Имя Фамилия"
+//        : profile.name
+//        profileUI?.login = profile.login.isEmpty
+//        ? "login"
+//        : profile.login
+//        profileUI?.bio = (profile.bio?.isEmpty ?? true)
+//        ? "Hello, World!"
+//        : profile.bio
+//    }
 }

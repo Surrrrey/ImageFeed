@@ -5,6 +5,7 @@ final class SplashViewController: UIViewController {
     // MARK: - Properties
     
     private let storage = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared
     
     private let segueAuthViewId = "ShowAuthView"
     
@@ -14,13 +15,13 @@ final class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
         
         if storage.accessToken != nil {
-            switchToTabBarController()
+            fetchProfile()
         } else {
             performSegue(withIdentifier: segueAuthViewId, sender: nil)
         }
     }
     
-    // MARK: Private Methods
+    // MARK: - Private Methods
     
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
@@ -34,7 +35,7 @@ final class SplashViewController: UIViewController {
     }
 }
 
-// MARK: Segue
+// MARK: - Segue
 
 extension SplashViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -59,6 +60,26 @@ extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
         vc.dismiss(animated: true)
         
-        switchToTabBarController()
+        fetchProfile()
+    }
+}
+
+// MARK: - FetchProfile
+
+extension SplashViewController {
+    private func fetchProfile() {
+        guard let token = OAuth2TokenStorage().accessToken else { return }
+        
+        profileService.fetchProfile(token: token) { [weak self] result in
+            guard let self else { return }
+            
+            switch result {
+            case .success:
+                switchToTabBarController()
+            case .failure:
+                //TODO: Обработать ошибку получения профиля
+                break
+            }
+        }
     }
 }

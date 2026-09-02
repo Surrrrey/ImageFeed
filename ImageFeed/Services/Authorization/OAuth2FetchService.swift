@@ -1,11 +1,19 @@
 import Foundation
 
+private enum AuthServiceError: Error {
+    case invalidAuthRequest
+}
+
 final class OAuth2FetchService {
     
     // MARK: - Properties
     
     static let shared = OAuth2FetchService()
     private init() {}
+    
+    private let urlSession = URLSession.shared
+    private var sessionTask: URLSessionTask?
+    private var lastCode: String?
     
     // MARK: - Private Methods
     
@@ -35,11 +43,24 @@ final class OAuth2FetchService {
     
     func fetchOAuthToken(code: String,
                          completion: @escaping (Swift.Result<String, Error>) -> Void) {
-        let urlRequest = makeAuthTokenRequest(code: code)
+        assert(Thread.isMainThread)
         
-        guard let urlRequest else { return }
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidAuthRequest))
+            return
+        }
         
-        let task = URLSession.shared.data(for: urlRequest, completion: { result in
+        sessionTask?.cancel()
+        
+        lastCode = code
+        
+        guard
+            let urlRequest = makeAuthTokenRequest(code: code)
+        else { completion(.failure(AuthServiceError.invalidAuthRequest))
+            return
+        }
+        
+        let task = urlSession.data(for: urlRequest, completion: { result in
             switch result {
             case .success(let data):
                 do {
@@ -48,15 +69,18 @@ final class OAuth2FetchService {
                     OAuth2TokenStorage().saveAccessToken(token: token)
                     completion(Result.success(token))
                 } catch {
-                    print("TryDataError")
+                    print("TryAuthDataError")
                     completion(Result.failure(error))
                 }
             case .failure(let error):
-                print("DataTaskError: \(error)")
+                print("AuthDataTaskError: \(error)")
                 completion(Result.failure(error))
             }
+            self.sessionTask = nil
+            self.lastCode = nil
         })
         
+        self.sessionTask = task
         task.resume()
     }
 }
