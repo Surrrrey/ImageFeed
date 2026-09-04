@@ -14,7 +14,9 @@ final class ProfileViewController: UIViewController {
     private var button = UIButton()
     
     // MARK: - Properties
-
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     private let profileService = ProfileService.shared
     
     // MARK: - Lifecycle
@@ -22,13 +24,14 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        fetchProfile()
-
         view.backgroundColor = .ypBlackIOS
         if let profileImage { configurationProfileImage(image: profileImage) }
         
         configureUILabels(with: profileService.profile)
         configurationButton()
+        
+        addObs()
+        updateAvatar()
     }
     
     // MARK: - Layout Methods
@@ -138,36 +141,26 @@ final class ProfileViewController: UIViewController {
     @objc private func buttonTap(_ sender: UIButton) {
         //todo
     }
+}
+
+//MARK: - Observers
+
+extension ProfileViewController {
     
-//    private func fetchProfile() {
-//        UIBlockingProgressHUD.show()
-//
-//        guard let token = OAuth2TokenStorage().accessToken else { return } //TODO: МОЖНО ПЕРЕБРОСИТЬ ПОЛЬЗОВАТЕЛЯ НА ЭКРАН С АВТОРИЗАЦИЕЙ
-//
-//        profileService.fetchProfile(token: token) { [weak self] result in
-//            UIBlockingProgressHUD.dismiss()
-//
-//            guard let self else { return }
-//
-//            switch result {
-//            case .success(let profile):
-//                updateProfileUI(from: profile)
-//            case .failure(let error):
-//                // TODO: Обработать ошибку загрузки профиля
-//                print("LoadProfileError: \(error)")
-//            }
-//        }
-//    } ЗАКОМЕНТИЛ НА ВСЯКИЙ СЛУЧАЙ
-//
-//    private func updateProfileUI(from profile: ProfileUI) {
-//        profileUI?.name = profile.name.isEmpty
-//        ? "Имя Фамилия"
-//        : profile.name
-//        profileUI?.login = profile.login.isEmpty
-//        ? "login"
-//        : profile.login
-//        profileUI?.bio = (profile.bio?.isEmpty ?? true)
-//        ? "Hello, World!"
-//        : profile.bio
-//    }
+    private func addObs() {
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main,
+            ) { [weak self] _ in
+                guard let self else { return }
+                self.updateAvatar()
+            }
+    }
+    
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
+            //TODO: Update avatar with kingfisher
+    }
 }

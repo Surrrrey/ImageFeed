@@ -6,6 +6,7 @@ final class SplashViewController: UIViewController {
     
     private let storage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     private let segueAuthViewId = "ShowAuthView"
     
@@ -68,15 +69,20 @@ extension SplashViewController: AuthViewControllerDelegate {
 
 extension SplashViewController {
     private func fetchProfile() {
+        UIBlockingProgressHUD.show()
+        
         guard let token = OAuth2TokenStorage().accessToken else { return }
         
         profileService.fetchProfile(token: token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             guard let self else { return }
             
             switch result {
-            case .success:
+            case .success(let profile):
+                profileImageService.fetchProfileImageURL(token: token, username: profile.login) { _ in }
                 switchToTabBarController()
-            case .failure:
+            case .failure(let error):
+                print(error)
                 //TODO: Обработать ошибку получения профиля
                 break
             }

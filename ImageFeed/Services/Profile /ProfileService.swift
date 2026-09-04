@@ -16,8 +16,6 @@ final class ProfileService {
     
     private(set) var profile: ProfileUI?
     
-    private let oAuthStorage = OAuth2TokenStorage()
-    
     private var sessionTask: URLSessionTask?
     
     // MARK: - Public Methods
@@ -65,7 +63,7 @@ final class ProfileService {
     
     private func makeProfileRequest(token: String) -> URLRequest? {
         guard
-            let profileUrl = URL(string: "https://api.unsplash.com/me")
+            let profileUrl = URL(string: Constants.defaultBaseURLString + Constants.userProfile)
         else { print("URLForProfileRequestConfigureError")
             return nil }
         

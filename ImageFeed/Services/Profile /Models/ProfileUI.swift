@@ -1,5 +1,3 @@
-import UIKit
-
 struct ProfileUI {
         
     var login: String
