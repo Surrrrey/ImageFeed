@@ -4,7 +4,7 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let storage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
@@ -71,7 +71,7 @@ extension SplashViewController {
     private func fetchProfile() {
         UIBlockingProgressHUD.show()
         
-        guard let token = OAuth2TokenStorage().accessToken else { return }
+        guard let token = storage.accessToken else { return }
         
         profileService.fetchProfile(token: token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()

@@ -30,11 +30,10 @@ final class ProfileService {
             return
         }
         
-        let task = URLSession.shared.data(for: request) { [weak self] result in
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             switch result {
-            case .success(let data):
-                do {
-                    let profileResult = try JSONDecoder().decode(ProfileResult.self, from: data)
+            case .success(let profileResult):
+                
                     let profileUI = ProfileUI(
                         login: profileResult.login,
                         firstName: profileResult.firstName,
@@ -44,12 +43,9 @@ final class ProfileService {
                     self?.profile = profileUI
                     
                     completion(Result.success(profileUI))
-                } catch {
-                    print("TryProfileDataError")
-                    completion(Result.failure(error))
-                }
+                
             case .failure(let error):
-                print("ProfileDataTaskError: \(error)")
+                print("ProfileTaskError: \(error.localizedDescription)")
                 completion(Result.failure(error))
             }
             self?.sessionTask = nil

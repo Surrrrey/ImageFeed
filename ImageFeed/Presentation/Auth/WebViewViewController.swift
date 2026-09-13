@@ -7,7 +7,7 @@ final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
     
-    private var isObserverActive = Bool(false)
+    private var progressBarObservation: NSKeyValueObservation?
     
     // MARK: - Outlets
     
@@ -22,33 +22,11 @@ final class WebViewViewController: UIViewController {
         
         webView.navigationDelegate = self
         progressView.progress = 0.0
+        
+        addObs()
         loadAuthView()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
-        subscribeWebView()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        unsubscribeWebView()
-    }
-    
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?) {
-            if keyPath == #keyPath(WKWebView.estimatedProgress) {
-                updateProgress()
-            } else {
-                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-            }
-        }
-    
     // MARK: - Private Methods
     
     private func loadAuthView() {
@@ -78,24 +56,14 @@ final class WebViewViewController: UIViewController {
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     
-    private func subscribeWebView() {
-        guard isObserverActive == false else { return }
-        
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
-        
-        isObserverActive = true
-    }
-    
-    private func unsubscribeWebView() {
-        guard isObserverActive == true else { return }
-        
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
-        
-        isObserverActive = false
+    private func addObs() {
+        progressBarObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self else { return }
+                 self.updateProgress()
+             })
     }
 }
 

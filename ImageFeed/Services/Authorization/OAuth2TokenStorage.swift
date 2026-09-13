@@ -1,6 +1,10 @@
 import Foundation
+import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage: OAuth2StorageProtocol {
+    
+    static let shared = OAuth2TokenStorage()
+    private init() {}
     
     // MARK: - Keys
     
@@ -13,14 +17,21 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
     
     // MARK: - Properties
     
-    private let storage: UserDefaults = .standard
+    private let storage: KeychainWrapper = .standard
     
     var accessToken: String? {
         get {
             storage.string(forKey: Keys.accessToken.rawValue)
         }
         set {
-            storage.set(newValue, forKey: Keys.accessToken.rawValue)
+            if let token = newValue {
+                let saveSuccess = storage.set(token, forKey: Keys.accessToken.rawValue)
+                guard saveSuccess else {
+                    print("SaveTokenError")
+                    return }
+            } else {
+                storage.removeObject(forKey: Keys.accessToken.rawValue)
+            }
         }
     }
     
@@ -29,7 +40,14 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
             storage.string(forKey: Keys.tokenType.rawValue)
         }
         set {
-            storage.set(newValue, forKey: Keys.tokenType.rawValue)
+            if let tokenType = newValue {
+                let saveSuccess = storage.set(tokenType, forKey: Keys.tokenType.rawValue)
+                guard saveSuccess else {
+                    print("SaveTokenTypeError")
+                    return }
+            } else {
+                storage.removeObject(forKey: Keys.tokenType.rawValue)
+            }
         }
     }
     
@@ -38,7 +56,14 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
             storage.string(forKey: Keys.scope.rawValue)
         }
         set {
-            storage.set(newValue, forKey: Keys.scope.rawValue)
+            if let scope = newValue {
+                let saveSuccess = storage.set(scope, forKey: Keys.scope.rawValue)
+                guard saveSuccess else {
+                    print("SaveScopeError")
+                    return }
+            } else {
+                storage.removeObject(forKey: Keys.scope.rawValue)
+            }
         }
     }
     
@@ -47,7 +72,14 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
             storage.integer(forKey: Keys.createdId.rawValue)
         }
         set {
-            storage.set(newValue, forKey: Keys.createdId.rawValue)
+            if let createdId = newValue {
+                let saveSuccess = storage.set(createdId, forKey: Keys.createdId.rawValue)
+                guard saveSuccess else {
+                    print("SaveCreatedIDError")
+                    return }
+            } else {
+                storage.removeObject(forKey: Keys.createdId.rawValue)
+            }
         }
     }
     

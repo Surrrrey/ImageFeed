@@ -6,5 +6,5 @@ enum Constants {
     static let defaultBaseURLString = "https://api.unsplash.com";
     static let receivingCodeAdress = "/oauth/authorize/native"
     static let userProfile = "/me"
-    static let userPublicProfile = "/users/:"
+    static let userPublicProfile = "/users/"
 }

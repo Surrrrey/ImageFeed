@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -6,6 +7,7 @@ final class ProfileViewController: UIViewController {
     
     private var profileImage = UIImage(systemName: "person.crop.circle.fill")
     private var profileImageView = UIImageView()
+    private let profileImageViewHeightAndWidth = 70.0
     
     private var profileName = UILabel()
     private var profileLogin = UILabel()
@@ -40,15 +42,17 @@ final class ProfileViewController: UIViewController {
         profileImageView.image = image
         profileImageView.tintColor = .gray
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(profileImageView)
         
         NSLayoutConstraint.activate([
-            profileImageView.widthAnchor.constraint(equalToConstant: 70),
-            profileImageView.heightAnchor.constraint(equalToConstant: 70),
+            profileImageView.widthAnchor.constraint(equalToConstant: profileImageViewHeightAndWidth),
+            profileImageView.heightAnchor.constraint(equalToConstant: profileImageViewHeightAndWidth),
             profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
         ])
+        profileImageView.layer.cornerRadius = profileImageViewHeightAndWidth / 2
+        profileImageView.clipsToBounds = true
     }
     
     private func configurationProfileName(name: String) {
@@ -141,9 +145,16 @@ final class ProfileViewController: UIViewController {
     @objc private func buttonTap(_ sender: UIButton) {
         //todo
     }
+    
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
+        
+        profileImageView.kf.setImage(with: profileImageURL,
+                                     placeholder: profileImage)
+    }
 }
 
-//MARK: - Observers
+//MARK: - Observer
 
 extension ProfileViewController {
     
@@ -157,10 +168,5 @@ extension ProfileViewController {
                 guard let self else { return }
                 self.updateAvatar()
             }
-    }
-    
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
-            //TODO: Update avatar with kingfisher
     }
 }

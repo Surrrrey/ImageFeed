@@ -60,25 +60,22 @@ final class OAuth2FetchService {
             return
         }
         
-        let task = urlSession.data(for: urlRequest, completion: { result in
+        let task = urlSession.objectTask(for: urlRequest) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             switch result {
-            case .success(let data):
-                do {
-                    let oAuthTokenResponseBody = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+            case .success(let oAuthTokenResponseBody):
+                
                     let token = oAuthTokenResponseBody.access_token
-                    OAuth2TokenStorage().saveAccessToken(token: token)
+                OAuth2TokenStorage.shared.saveAccessToken(token: token)
+                
                     completion(Result.success(token))
-                } catch {
-                    print("TryAuthDataError")
-                    completion(Result.failure(error))
-                }
+                
             case .failure(let error):
-                print("AuthDataTaskError: \(error)")
+                print("AuthTaskError: \(error.localizedDescription)")
                 completion(Result.failure(error))
             }
-            self.sessionTask = nil
-            self.lastCode = nil
-        })
+            self?.sessionTask = nil
+            self?.lastCode = nil
+        }
         
         self.sessionTask = task
         task.resume()

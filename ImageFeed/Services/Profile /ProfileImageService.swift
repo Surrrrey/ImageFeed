@@ -27,41 +27,36 @@ final class ProfileImageService {
         sessionTask?.cancel()
         
         guard
-            let profile = profile.profile?.login,
+            profile.profile?.login != nil,
             let request = makeProfileImageRequest(username, token: token)
         else {
             completion(.failure(ProfileImageServiceError.invalidProfileImageRequest))
             return
         }
         
-        let task = URLSession.shared.data(for: request) { [weak self] result in
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<ProfileImageResult, Error>) in
             switch result {
-            case .success(let data):
-                do {
-                    let result = try JSONDecoder().decode(ProfileImageResult.self, from: data)
-                    
-                    guard let profileImage = result.profileImage,
-                          let smallProfileImage = profileImage["small"]
-                    else { return }
-                    
-                    self?.avatarURL = profileImage["small"]
-                    
-                    completion(Result.success(smallProfileImage))
-                    NotificationCenter.default.post(
-                        name: ProfileImageService.didChangeNotification,
-                        object: self,
-                        userInfo: [NotificationKeys.URL: smallProfileImage])
-                } catch {
-                    print("TryProfileImageError")
-                    completion(Result.failure(error))
-                }
+            case .success(let profileImage):
+                guard let image = profileImage.profileImage,
+                      let smallProfileImage = image["large"] // Если загружать "small" изображение то оно очень пикселит и ужасно выглядит, поэтому выбрал "large"
+                else { return }
+                
+                self?.avatarURL = smallProfileImage
+                
+                completion(Result.success(smallProfileImage))
+                
+                NotificationCenter.default.post(
+                    name: ProfileImageService.didChangeNotification,
+                    object: self,
+                    userInfo: [NotificationKeys.URL: smallProfileImage])
+                
             case .failure(let error):
-                print("ProfileImageDataError: \(error)")
+                print("ProfileImageTaskError: \(error.localizedDescription)")
                 completion(Result.failure(error))
             }
             self?.sessionTask = nil
         }
-
+        
         self.sessionTask = task
         task.resume()
     }

@@ -112,15 +112,20 @@ extension AuthViewController: WebViewViewControllerDelegate {
             switch result {
             case .success:
                 self.delegate?.didAuthenticate(self)
-                break
             case .failure:
-                // TODO: Error handling
-                break
+                showAuthError()
             }
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
+    }
+    
+    private func showAuthError() {
+        let alert = AlertModel(title: "Что-то пошло не так(",
+                               message: "Не удалось войти в систему",
+                               buttonText: "ОК") { }
+        AlertPresenter().show(in: self, model: alert)
     }
 }
