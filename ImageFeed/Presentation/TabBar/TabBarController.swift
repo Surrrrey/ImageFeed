@@ -11,7 +11,7 @@ final class TabBarController: UITabBarController {
     private func configTabBar() {
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         
-        let imagesListController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController")
+        guard let imagesListController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as? ImagesListViewController else { return }
         
         let profileViewController = ProfileViewController()
         profileViewController.tabBarItem = UITabBarItem(title: nil,

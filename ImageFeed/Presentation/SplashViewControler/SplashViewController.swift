@@ -6,6 +6,7 @@ final class SplashViewController: UIViewController {
     private let logoImage = UIImage(resource: .logoOfUnsplash)
     private var logoImageView = UIImageView()
     
+    private let backgroundColor = UIColor(resource: .ypBlackIOS)
     // MARK: - Properties
     
     private let storage = OAuth2TokenStorage.shared
@@ -36,6 +37,7 @@ final class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = backgroundColor
         configLogo()
     }
     
