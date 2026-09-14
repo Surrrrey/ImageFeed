@@ -2,13 +2,17 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
+    // MARK: - Layout Properties
+    private let logoImage = UIImage(resource: .logoOfUnsplash)
+    private var logoImageView = UIImageView()
+    
     // MARK: - Properties
     
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
-    private let segueAuthViewId = "ShowAuthView"
+    private let AuthViewId = "AuthViewController"
     
     // MARK: - Lifecycle
     
@@ -18,8 +22,35 @@ final class SplashViewController: UIViewController {
         if storage.accessToken != nil {
             fetchProfile()
         } else {
-            performSegue(withIdentifier: segueAuthViewId, sender: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            guard let authViewController = storyboard.instantiateViewController(withIdentifier: AuthViewId) as? AuthViewController else {
+                print("AuthControllerIdentifierError")
+                return
+            }
+            authViewController.delegate = self
+            authViewController.modalPresentationStyle = .fullScreen
+            present(authViewController, animated: true)
         }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configLogo()
+    }
+    
+    // MARK: - Layout
+    
+    private func configLogo() {
+        logoImageView.image = logoImage
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(logoImageView)
+        
+        NSLayoutConstraint.activate([
+            logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     // MARK: - Private Methods
@@ -33,25 +64,6 @@ final class SplashViewController: UIViewController {
         let tabBarController =  UIStoryboard(name: "Main", bundle: .main).instantiateViewController(identifier: "TabBarViewController")
         
         window.rootViewController = tabBarController
-    }
-}
-
-// MARK: - Segue
-
-extension SplashViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == segueAuthViewId {
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers.first as? AuthViewController
-            else {
-                assertionFailure("Failed to prepare for \(segueAuthViewId)")
-                return
-            }
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
     }
 }
 
