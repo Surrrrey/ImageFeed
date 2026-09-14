@@ -119,21 +119,6 @@
             </objects>
             <point key="canvasLocation" x="-669.46564885496184" y="64.788732394366207"/>
         </scene>
-        <!--Profile View-->
-        <scene sceneID="92c-j0-d8a">
-            <objects>
-                <viewController storyboardIdentifier="ProfileViewController" title="Profile View" id="spy-pz-ZfZ" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="AOW-oL-aZi">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="agD-wh-nDK"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="" image="Active Profile" id="JVz-C5-wbX"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ggi-lo-86b" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="259" y="-254"/>
-        </scene>
         <!--Single Image-->
         <scene sceneID="6TG-CO-xbW">
             <objects>
@@ -348,7 +333,6 @@
     <resources>
         <image name="6" width="1500" height="2250"/>
         <image name="Active Main" width="30" height="30"/>
-        <image name="Active Profile" width="30" height="30"/>
         <image name="Backward" width="24" height="24"/>
         <image name="Heart No Active" width="44" height="44"/>
         <image name="Logo_of_Unsplash" width="60" height="60"/>
