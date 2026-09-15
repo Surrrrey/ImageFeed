@@ -27,6 +27,8 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlackIOS
+        fixFlashingProfileIconOnTabBar()
+        
         if let profileImage { configurationProfileImage(image: profileImage) }
         
         configureUILabels(with: profileService.profile)
@@ -37,6 +39,11 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Layout Methods
+    
+    private func fixFlashingProfileIconOnTabBar() {
+        extendedLayoutIncludesOpaqueBars = true
+        edgesForExtendedLayout = []
+    }
     
     private func configurationProfileImage(image: UIImage) {
         profileImageView.image = image
@@ -143,7 +150,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func buttonTap(_ sender: UIButton) {
-        //todo
+        //TODO:
     }
     
     private func updateAvatar() {

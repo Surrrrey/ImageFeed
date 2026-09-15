@@ -7,13 +7,12 @@ final class SplashViewController: UIViewController {
     private var logoImageView = UIImageView()
     
     private let backgroundColor = UIColor(resource: .ypBlackIOS)
+    
     // MARK: - Properties
     
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
-    
-    private let AuthViewId = "AuthViewController"
     
     // MARK: - Lifecycle
     
@@ -23,14 +22,7 @@ final class SplashViewController: UIViewController {
         if storage.accessToken != nil {
             fetchProfile()
         } else {
-            let storyboard = UIStoryboard(name: "Main", bundle: .main)
-            guard let authViewController = storyboard.instantiateViewController(withIdentifier: AuthViewId) as? AuthViewController else {
-                print("AuthControllerIdentifierError")
-                return
-            }
-            authViewController.delegate = self
-            authViewController.modalPresentationStyle = .fullScreen
-            present(authViewController, animated: true)
+            showAuthView()
         }
     }
     
@@ -41,7 +33,7 @@ final class SplashViewController: UIViewController {
         configLogo()
     }
     
-    // MARK: - Layout
+    // MARK: - Layout Methods
     
     private func configLogo() {
         logoImageView.image = logoImage
@@ -57,15 +49,27 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Private Methods
     
+    private func showAuthView() {
+        let authViewController = AuthViewController()
+        authViewController.delegate = self
+        
+        let navigationController = UINavigationController(rootViewController: authViewController)
+        
+        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.navigationBar.isHidden = true
+        
+        present(navigationController, animated: true)
+    }
+    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             assertionFailure("Invalid window configuration")
             return
         }
         
-        let tabBarController =  UIStoryboard(name: "Main", bundle: .main).instantiateViewController(identifier: "TabBarViewController")
-        
+        let tabBarController = TabBarController()
         window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
     }
 }
 
@@ -73,7 +77,6 @@ final class SplashViewController: UIViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthViewController) {
-        vc.dismiss(animated: true)
         
         fetchProfile()
     }

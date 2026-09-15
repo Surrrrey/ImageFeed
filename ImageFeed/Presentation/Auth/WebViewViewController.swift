@@ -9,16 +9,22 @@ final class WebViewViewController: UIViewController {
     
     private var progressBarObservation: NSKeyValueObservation?
     
-    // MARK: - Outlets
+    // MARK: - Layout
     
-    @objc @IBOutlet private var webView: WKWebView!
+    private let backgroundColor = UIColor(resource: .ypBlackIOS)
     
-    @IBOutlet private var progressView: UIProgressView!
+    private var webView = WKWebView()
+    
+    private var progressView = UIProgressView()
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = backgroundColor
+        configWebView()
+        configProgressView()
         
         webView.navigationDelegate = self
         progressView.progress = 0.0
@@ -26,7 +32,34 @@ final class WebViewViewController: UIViewController {
         addObs()
         loadAuthView()
     }
+    
+    // MARK: - Layout Methods
+    
+    private func configWebView() {
+        webView.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(webView)
+        
+        NSLayoutConstraint.activate([
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
+    private func configProgressView() {
+        progressView.tintColor = .ypBlackIOS
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(progressView)
+        
+        NSLayoutConstraint.activate([
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+        ])
+    }
     // MARK: - Private Methods
     
     private func loadAuthView() {
@@ -76,6 +109,7 @@ extension WebViewViewController: WKNavigationDelegate {
                  decisionHandler: @escaping @MainActor (WKNavigationActionPolicy) -> Void) {
         if let code = code(from: navigationAction) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            delegate?.webViewViewControllerDidCancel(self)
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)

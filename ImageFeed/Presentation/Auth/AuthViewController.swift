@@ -18,8 +18,6 @@ final class AuthViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let segueWebViewId = "ShowWebView"
-    
     private let oAuth2Service = OAuth2FetchService.shared
     
     weak var delegate: AuthViewControllerDelegate?
@@ -29,27 +27,14 @@ final class AuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = self.backgroundColor // TODO: // Я знаю что у меня на экране сейчас отображается две картинки и две кнопки, я сверстал экран кодом сразу на будущее, а как делать переход без сториборда пока не учили //
+        view.backgroundColor = self.backgroundColor
+        
         configLogoView()
         configAuthButton()
         configBackButton()
     }
     
-    // MARK: - Segue
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == segueWebViewId {
-            guard
-                let webViewViewController = segue.destination as? WebViewViewController else {
-                assertionFailure("Failed to prepare for \(segueWebViewId)")
-                return }
-            webViewViewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-    
-    // MARK: - Private Methods
+    // MARK: - Layout Methods
     
     private func configLogoView() {
         logoView.tintColor = .ypWhiteIOS
@@ -76,7 +61,7 @@ final class AuthViewController: UIViewController {
         
         button.addAction(UIAction { [weak self] _ in
             guard let self else { return }
-            self.performSegue(withIdentifier: self.segueWebViewId, sender: self)
+            showWebView()
         }, for: .touchUpInside)
         
         view.addSubview(button)
@@ -94,6 +79,15 @@ final class AuthViewController: UIViewController {
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = .backward
         navigationItem.backBarButtonItem = UIBarButtonItem(title: nil, style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = .ypBlackIOS
+    }
+    
+    // MARK: - Private Methods
+    
+    private func showWebView() {
+        let webViewController = WebViewViewController()
+        webViewController.delegate = self
+        navigationController?.navigationBar.isHidden = false
+        navigationController?.pushViewController(webViewController, animated: true)
     }
 }
 
@@ -119,7 +113,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        dismiss(animated: true)
+        vc.dismiss(animated: true)
     }
     
     private func showAuthError() {

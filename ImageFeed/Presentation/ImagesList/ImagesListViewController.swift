@@ -2,7 +2,12 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
     
-    // MARK: Properties
+    // MARK: - Layout Properties
+    
+    private var tableView = UITableView(frame: .zero, style: .plain)
+    private let backgroundColor = UIColor(resource: .ypBlackIOS)
+    
+    // MARK: - Properties
     
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -12,40 +17,68 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
-    private let singleImageViewId = "ShowSingleImage"
-    
     // MARK: - Mock
     
     private let photosName: [String] = Array(0...19).map{ "\($0)" }
-    
-    // MARK: - Outlets
-    
-    @IBOutlet private var tableView: UITableView!
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = backgroundColor
+        
+        configTableView()
+        configDataSourceAndDelegate()
+        registerCell()
+        
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
+    
+    // MARK: - Layout Methods
+    
+    private func configTableView() {
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = backgroundColor
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
+    private func registerCell() {
+        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+    }
+    
+    private func configDataSourceAndDelegate() {
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
     // MARK: - Private Methods
     
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         guard let image = UIImage(named: "\(indexPath.row)") else { return }
         
+        cell.selectionStyle = .none
+        cell.backgroundColor = backgroundColor
+        
         cell.setupGradient()
-        cell.cellImageOutlet.image = image
-        cell.dateLabelOutlet.text = dateFormatter.string(from: Date())
+        cell.cellImage.image = image
+        cell.dateLabel.text = dateFormatter.string(from: Date())
         
         if indexPath.row % 2 == 0 {
-            cell.likeButtonOutlet.setImage(UIImage(resource: .heartActive), for: .normal)
+            cell.likeButton.setImage(UIImage(resource: .heartActive), for: .normal)
         } else {
-            cell.likeButtonOutlet.setImage(UIImage(resource: .heartNoActive), for: .normal)
+            cell.likeButton.setImage(UIImage(resource: .heartNoActive), for: .normal)
         }
     }
-    
 }
 
 // MARK: - DataSource
@@ -76,10 +109,10 @@ extension ImagesListViewController: UITableViewDelegate {
         
         let singleImageViewController = SingleImageViewController()
         singleImageViewController.image = image
-
+        
         singleImageViewController.modalPresentationStyle = .fullScreen
         singleImageViewController.modalTransitionStyle = .crossDissolve
-
+        
         present(singleImageViewController, animated: true)
     }
     

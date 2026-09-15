@@ -6,18 +6,107 @@ final class ImagesListCell: UITableViewCell {
     
     static let reuseIdentifier = "ImagesListCell"
     
-    private let gradient = CAGradientLayer()
-
-    // MARK: - Outlets
+    // MARK: - Layout Properties
     
-    @IBOutlet var cellImageOutlet: UIImageView!
-    @IBOutlet weak var likeButtonOutlet: UIButton!
-    @IBOutlet weak var dateLabelOutlet: UILabel!
-    @IBOutlet weak var gradientLayer: UIImageView!
+    var cellImage = UIImageView()
+    private let cornerRadius = 16.0
+    
+    var likeButton = UIButton()
+    private let likeButtonImage = UIImage(resource: .heartNoActive)
+    private let likeButtonWidthAndHeight = 44.0
+    
+    var dateLabel = UILabel()
+    
+    private let gradient = CAGradientLayer()
+    var gradientLayer = UIImageView()
+    private let gradientLayerHeight = 30.0
+    
+    // MARK: - Init
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        configCellImage()
+        configLikeButton()
+        configDateLabel()
+        configGradientLayer()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Layout Methods
+    
+    private func configCellImage() {
+        cellImage.layer.cornerRadius = cornerRadius
+        cellImage.layer.masksToBounds = true
+        cellImage.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(cellImage)
+        
+        NSLayoutConstraint.activate([
+            cellImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            cellImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            cellImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
+            cellImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
+        ])
+    }
+    
+    private func configLikeButton() {
+        likeButton.setImage(likeButtonImage, for: .normal)
+        likeButton.setTitle(nil, for: .normal)
+        likeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(likeButton)
+        
+        NSLayoutConstraint.activate([
+            likeButton.heightAnchor.constraint(equalToConstant: likeButtonWidthAndHeight),
+            likeButton.widthAnchor.constraint(equalToConstant: likeButtonWidthAndHeight),
+            likeButton.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
+            likeButton.topAnchor.constraint(equalTo: cellImage.topAnchor)
+        ])
+        
+        let action = UIAction {[weak self] _ in
+            guard let self else { return }
+            // TODO: LIKE BUTTON TAP
+        }
+        
+        likeButton.addAction(action, for: .touchUpInside)
+    }
+    
+    private func configDateLabel() {
+        dateLabel.textColor = .ypWhiteIOS
+        dateLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(dateLabel)
+        
+        NSLayoutConstraint.activate([
+            dateLabel.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor, constant: 8),
+            dateLabel.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor, constant: -8),
+            cellImage.trailingAnchor.constraint(greaterThanOrEqualTo: cellImage.trailingAnchor, constant: -8)
+        ])
+    }
+    
+    private func configGradientLayer() {
+        gradientLayer.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(gradientLayer)
+        
+        NSLayoutConstraint.activate([
+            gradientLayer.heightAnchor.constraint(equalToConstant: gradientLayerHeight),
+            gradientLayer.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
+            gradientLayer.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor),
+            gradientLayer.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor)
+        ])
+    }
     
     // MARK: - Public Methods
     
     func setupGradient() {
+        gradientLayer = UIImageView()
+        
         gradientLayer.image = nil
         
         gradient.colors = [
