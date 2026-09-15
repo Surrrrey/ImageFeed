@@ -88,4 +88,8 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
     func saveAccessToken(token: String) {
         accessToken = token
     }
+    
+    func removeToken() {
+        accessToken = nil
+    }
 }

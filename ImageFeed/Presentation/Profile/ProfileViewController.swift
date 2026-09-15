@@ -105,7 +105,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configurationButton() {
-        button = .systemButton(with: UIImage(resource: .exit), target: self, action: #selector(buttonTap))
+        button.setImage(UIImage(resource: .exit), for: .normal)
         button.tintColor = .ypRedIOS
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -117,6 +117,13 @@ final class ProfileViewController: UIViewController {
             button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             button.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor)
         ])
+        
+        let action = UIAction() { [weak self] _ in
+            guard let self else { return }
+            OAuth2TokenStorage.shared.removeToken()
+            switchToSplashView()
+        }
+        button.addAction(action, for: .touchUpInside)
     }
     
     private func configureUILabels(with profile: ProfileUI?) {
@@ -149,15 +156,22 @@ final class ProfileViewController: UIViewController {
         return label
     }
     
-    @objc private func buttonTap(_ sender: UIButton) {
-        //TODO:
-    }
-    
     private func updateAvatar() {
         guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
         
         profileImageView.kf.setImage(with: profileImageURL,
                                      placeholder: profileImage)
+    }
+    
+    private func switchToSplashView() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        
+        let splashViewController = SplashViewController()
+        window.rootViewController = splashViewController
+        window.makeKeyAndVisible()
     }
 }
 

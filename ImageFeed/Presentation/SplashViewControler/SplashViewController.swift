@@ -76,7 +76,7 @@ final class SplashViewController: UIViewController {
 // MARK: - AuthViewController Delegate
 
 extension SplashViewController: AuthViewControllerDelegate {
-    func didAuthenticate(_ vc: AuthViewController) {
+    func didAuthenticate() {
         
         fetchProfile()
     }

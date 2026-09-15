@@ -23,6 +23,13 @@ final class AuthViewController: UIViewController {
     weak var delegate: AuthViewControllerDelegate?
     
     // MARK: - Lifecycle
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if OAuth2TokenStorage.shared.accessToken != nil {
+            delegate?.didAuthenticate()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,7 +112,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             
             switch result {
             case .success:
-                self.delegate?.didAuthenticate(self)
+                self.delegate?.didAuthenticate()
             case .failure:
                 showAuthError()
             }
