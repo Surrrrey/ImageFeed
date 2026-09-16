@@ -2,6 +2,7 @@ import UIKit
 
 private enum ProfileImageServiceError: Error {
     case invalidProfileImageRequest
+    case invalidProfileImageResponse
 }
 
 final class ProfileImageService {
@@ -38,8 +39,13 @@ final class ProfileImageService {
             switch result {
             case .success(let profileImage):
                 guard let image = profileImage.profileImage,
-                      let smallProfileImage = image["large"] // Если загружать "small" изображение то оно очень пикселит и ужасно выглядит, поэтому выбрал "large"
-                else { return }
+                      let smallProfileImage = image["large"]
+                else {
+                    let error = ProfileImageServiceError.invalidProfileImageResponse
+                    print("ProfileImageServiceError")
+                    completion(.failure(error))
+                    return
+                }
                 
                 self?.avatarURL = smallProfileImage
                 

@@ -38,6 +38,12 @@ final class ProfileViewController: UIViewController {
         updateAvatar()
     }
     
+    deinit {
+        if let observer = profileImageServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+    
     // MARK: - Layout Methods
     
     private func fixFlashingProfileIconOnTabBar() {
@@ -127,7 +133,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configureUILabels(with profile: ProfileUI?) {
-        guard let profile = profileService.profile else { return }
+        guard let profile else { return }
         
         var name = ""
         

@@ -2,6 +2,7 @@ import Foundation
 
 private enum AuthServiceError: Error {
     case invalidAuthRequest
+    case invalidObjectTask
 }
 
 final class OAuth2FetchService {
@@ -61,20 +62,27 @@ final class OAuth2FetchService {
         }
         
         let task = urlSession.objectTask(for: urlRequest) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            guard let self,
+                  self.lastCode == code else {
+                completion(.failure(AuthServiceError.invalidObjectTask))
+                return
+            }
+            
+            self.sessionTask = nil
+            self.lastCode = nil
+            
             switch result {
             case .success(let oAuthTokenResponseBody):
                 
-                    let token = oAuthTokenResponseBody.access_token
+                let token = oAuthTokenResponseBody.access_token
                 OAuth2TokenStorage.shared.saveAccessToken(token: token)
                 
-                    completion(Result.success(token))
+                completion(Result.success(token))
                 
             case .failure(let error):
                 print("AuthTaskError: \(error.localizedDescription)")
                 completion(Result.failure(error))
             }
-            self?.sessionTask = nil
-            self?.lastCode = nil
         }
         
         self.sessionTask = task

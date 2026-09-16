@@ -86,10 +86,10 @@ extension SplashViewController: AuthViewControllerDelegate {
 
 extension SplashViewController {
     private func fetchProfile() {
-        UIBlockingProgressHUD.show()
-        
         guard let token = storage.accessToken else { return }
         
+        UIBlockingProgressHUD.show()
+
         profileService.fetchProfile(token: token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             guard let self else { return }
