@@ -27,7 +27,6 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlackIOS
-        fixFlashingProfileIconOnTabBar()
         
         if let profileImage { configurationProfileImage(image: profileImage) }
         
@@ -45,11 +44,6 @@ final class ProfileViewController: UIViewController {
     }
     
     // MARK: - Layout Methods
-    
-    private func fixFlashingProfileIconOnTabBar() {
-        extendedLayoutIncludesOpaqueBars = true
-        edgesForExtendedLayout = []
-    }
     
     private func configurationProfileImage(image: UIImage) {
         profileImageView.image = image

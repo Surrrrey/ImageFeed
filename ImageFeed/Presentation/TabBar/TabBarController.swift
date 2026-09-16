@@ -18,6 +18,7 @@ final class TabBarController: UITabBarController {
         
         tabBar.tintColor = .ypWhiteIOS
         tabBar.backgroundColor = .ypBlackIOS
+        tabBar.isTranslucent = false
         
         let imagesListController = ImagesListViewController()
         imagesListController.tabBarItem = UITabBarItem(title: nil,
