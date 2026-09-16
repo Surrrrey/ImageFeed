@@ -1,17 +1,25 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - Layout
     
     private var profileImage = UIImage(systemName: "person.crop.circle.fill")
     private var profileImageView = UIImageView()
+    private let profileImageViewHeightAndWidth = 70.0
     
     private var profileName = UILabel()
     private var profileLogin = UILabel()
-    private var profileDescription: UILabel?
+    private var profileDescription = UILabel()
     
     private var button = UIButton()
+    
+    // MARK: - Properties
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    private let profileService = ProfileService.shared
     
     // MARK: - Lifecycle
     
@@ -19,11 +27,20 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlackIOS
+        
         if let profileImage { configurationProfileImage(image: profileImage) }
-        configurationProfileName(name: "Имя Фамилия")
-        configurationProfileLogin(login: "@login")
-        configurationProfileDescription(description: "Hello, World!")
+        
+        configureUILabels(with: profileService.profile)
         configurationButton()
+        
+        addObs()
+        updateAvatar()
+    }
+    
+    deinit {
+        if let observer = profileImageServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     // MARK: - Layout Methods
@@ -32,15 +49,17 @@ final class ProfileViewController: UIViewController {
         profileImageView.image = image
         profileImageView.tintColor = .gray
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         view.addSubview(profileImageView)
         
         NSLayoutConstraint.activate([
-            profileImageView.widthAnchor.constraint(equalToConstant: 70),
-            profileImageView.heightAnchor.constraint(equalToConstant: 70),
+            profileImageView.widthAnchor.constraint(equalToConstant: profileImageViewHeightAndWidth),
+            profileImageView.heightAnchor.constraint(equalToConstant: profileImageViewHeightAndWidth),
             profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
         ])
+        profileImageView.layer.cornerRadius = profileImageViewHeightAndWidth / 2
+        profileImageView.clipsToBounds = true
     }
     
     private func configurationProfileName(name: String) {
@@ -74,7 +93,6 @@ final class ProfileViewController: UIViewController {
     private func configurationProfileDescription(description: String) {
         profileDescription = configLabel(text: description, color: .ypWhiteIOS, font: .systemFont(ofSize: 13, weight: .regular))
         
-        guard let profileDescription else { return }
         profileDescription.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(profileDescription)
@@ -87,7 +105,7 @@ final class ProfileViewController: UIViewController {
     }
     
     private func configurationButton() {
-        button = .systemButton(with: UIImage(resource: .exit), target: self, action: #selector(buttonTap))
+        button.setImage(UIImage(resource: .exit), for: .normal)
         button.tintColor = .ypRedIOS
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -99,6 +117,32 @@ final class ProfileViewController: UIViewController {
             button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             button.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor)
         ])
+        
+        let action = UIAction() { [weak self] _ in
+            guard let self else { return }
+            OAuth2TokenStorage.shared.removeToken()
+            switchToSplashView()
+        }
+        button.addAction(action, for: .touchUpInside)
+    }
+    
+    private func configureUILabels(with profile: ProfileUI?) {
+        guard let profile else { return }
+        
+        var name = ""
+        
+        if let firstName = profile.firstName {
+            name.append(firstName)
+        }
+        if let lastName = profile.lastName {
+            name.append(" " + lastName)
+        }
+        
+        configurationProfileName(name: name)
+        configurationProfileLogin(login: "@" + profile.login)
+        
+        guard let bio = profile.bio else { return }
+        configurationProfileDescription(description: bio)
     }
     
     // MARK: - Private Methods
@@ -112,7 +156,38 @@ final class ProfileViewController: UIViewController {
         return label
     }
     
-    @objc private func buttonTap(_ sender: UIButton) {
-        //todo
+    private func updateAvatar() {
+        guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
+        
+        profileImageView.kf.setImage(with: profileImageURL,
+                                     placeholder: profileImage)
+    }
+    
+    private func switchToSplashView() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        
+        let splashViewController = SplashViewController()
+        window.rootViewController = splashViewController
+        window.makeKeyAndVisible()
+    }
+}
+
+//MARK: - Observer
+
+extension ProfileViewController {
+    
+    private func addObs() {
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main,
+            ) { [weak self] _ in
+                guard let self else { return }
+                self.updateAvatar()
+            }
     }
 }

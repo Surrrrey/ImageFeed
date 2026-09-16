@@ -7,48 +7,59 @@ final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
     
-    private var isObserverActive = Bool(false)
+    private var progressBarObservation: NSKeyValueObservation?
     
-    // MARK: - Outlets
+    // MARK: - Layout
     
-    @objc @IBOutlet private var webView: WKWebView!
+    private let backgroundColor = UIColor(resource: .ypBlackIOS)
     
-    @IBOutlet private var progressView: UIProgressView!
+    private var webView = WKWebView()
+    
+    private var progressView = UIProgressView()
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = backgroundColor
+        configWebView()
+        configProgressView()
+        
         webView.navigationDelegate = self
         progressView.progress = 0.0
+        
+        addObs()
         loadAuthView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    // MARK: - Layout Methods
+    
+    private func configWebView() {
+        webView.translatesAutoresizingMaskIntoConstraints = false
         
-        subscribeWebView()
+        view.addSubview(webView)
+        
+        NSLayoutConstraint.activate([
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    private func configProgressView() {
+        progressView.tintColor = .ypBlackIOS
+        progressView.translatesAutoresizingMaskIntoConstraints = false
         
-        unsubscribeWebView()
+        view.addSubview(progressView)
+        
+        NSLayoutConstraint.activate([
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+        ])
     }
-    
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?) {
-            if keyPath == #keyPath(WKWebView.estimatedProgress) {
-                updateProgress()
-            } else {
-                super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-            }
-        }
-    
     // MARK: - Private Methods
     
     private func loadAuthView() {
@@ -78,24 +89,14 @@ final class WebViewViewController: UIViewController {
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     
-    private func subscribeWebView() {
-        guard isObserverActive == false else { return }
-        
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
-        
-        isObserverActive = true
-    }
-    
-    private func unsubscribeWebView() {
-        guard isObserverActive == true else { return }
-        
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
-        
-        isObserverActive = false
+    private func addObs() {
+        progressBarObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self else { return }
+                 self.updateProgress()
+             })
     }
 }
 
