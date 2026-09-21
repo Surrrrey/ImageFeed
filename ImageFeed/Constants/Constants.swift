@@ -7,4 +7,5 @@ enum Constants {
     static let receivingCodeAdress = "/oauth/authorize/native"
     static let userProfile = "/me"
     static let userPublicProfile = "/users/"
+    static let photoList = "/photos"
 }

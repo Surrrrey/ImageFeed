@@ -17,6 +17,8 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    private let imagesListService = ImagesListService()
+    
     // MARK: - Mock
     
     private let photosName: [String] = Array(0...19).map{ "\($0)" }
@@ -130,5 +132,12 @@ extension ImagesListViewController: UITableViewDelegate {
         let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
         
         return cellHeight
+    }
+    
+    func tableView(_ tableView: UITableView,
+                  willDisplay cell: UITableViewCell,
+                  forRowAt indexPath: IndexPath) {
+        guard indexPath.row + 1 == imagesListService.photos.count else { return }
+        ImagesListService().fetchPhotosNextPage()
     }
 }
