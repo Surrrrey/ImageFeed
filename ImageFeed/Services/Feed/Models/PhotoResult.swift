@@ -2,8 +2,8 @@ import Foundation
 
 struct PhotoResult: Codable {
     let id: String
-    let height: CGFloat
-    let width: CGFloat
+    let height: Int
+    let width: Int
     let createdAt: Date?
     let description: String?
     let urls: PhotosURLs

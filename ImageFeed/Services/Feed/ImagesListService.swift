@@ -19,7 +19,22 @@ final class ImagesListService {
     
     // MARK: - Public Methods
     
-    func fetchPhotosNextPage(completion: @escaping (Result<[Photo], Error>) -> Void) {
+    func fetchPhotosNextPage() {
+        fetchPhotosAndConvert() { [weak self] result in
+            
+            switch result {
+            case .success(let photo):
+                
+            case .failure(let error):
+                
+            }
+        }
+    }
+    
+    
+    // MARK: - Private Methods
+    
+    private func fetchPhotosAndConvert(completion: @escaping (Result<[Photo], Error>) -> Void) {
         sessionTask?.cancel()
         
         guard let request = makeImagesRequest() else {
@@ -27,25 +42,24 @@ final class ImagesListService {
             return
         }
         
-        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<PhotoResult, Error>) in
-            guard let self else {
-                completion(.failure(ImagesListServiceError.invalidImagesObjectTask))
-                return
-            }
-            
-            self.sessionTask = nil
+        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+                        
+            self?.sessionTask = nil
             
             switch result {
-            case .success(let photoResult):
-                let photos = [Photo(id: photoResult.id,
-                                          size: CGSize(width: photoResult.width, height: photoResult.height),
-                                          createdAt: photoResult.createdAt,
-                                          description: photoResult.description,
-                                          thumbImageURL: photoResult.urls.thumb,
-                                          lagreImageURL: photoResult.urls.raw,
-                                          isLiked: photoResult.isLiked)]
-                self.photos.append(contentsOf: photos)
-                completion(.success(photos))
+            case .success(let result):
+                let photosArray = result.map { element in
+                    Photo(
+                        id: element.id,
+                        size: CGSize(width: element.width, height: element.height),
+                        createdAt: element.createdAt,
+                        description: element.description,
+                        thumbImageURL: element.urls.thumb,
+                        lagreImageURL: element.urls.regular,
+                        isLiked: element.isLiked)
+                }
+                self?.photos.append(contentsOf: photosArray)
+                completion(.success(photosArray))
                 
                 NotificationCenter.default.post(
                     name: ImagesListService.didChangeNotification,
@@ -61,16 +75,18 @@ final class ImagesListService {
         task.resume()
     }
     
-    // MARK: - Private Methods
-    
     private func makeImagesRequest() -> URLRequest? {
         guard
             let imagesUrl = URL(string: Constants.defaultBaseURLString + Constants.photoList)
         else { print("URLForImagesListRequestConfigureError")
-        return nil }
+            return nil }
+        
+        guard let token = OAuth2TokenStorage.shared.accessToken else { print("MakeImagesRequestError: Token = nil")
+            return nil }
         
         var request = URLRequest(url: imagesUrl)
         request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         if
             lastLoadedPage == nil {
