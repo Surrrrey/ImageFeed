@@ -19,22 +19,7 @@ final class ImagesListService {
     
     // MARK: - Public Methods
     
-    func fetchPhotosNextPage() {
-        fetchPhotosAndConvert() { [weak self] result in
-            
-            switch result {
-            case .success(let photo):
-                
-            case .failure(let error):
-                
-            }
-        }
-    }
-    
-    
-    // MARK: - Private Methods
-    
-    private func fetchPhotosAndConvert(completion: @escaping (Result<[Photo], Error>) -> Void) {
+    func fetchPhotosNextPage(completion: @escaping (Result<[Photo], Error>) -> Void) {
         sessionTask?.cancel()
         
         guard let request = makeImagesRequest() else {
@@ -43,7 +28,7 @@ final class ImagesListService {
         }
         
         let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
-                        
+            
             self?.sessionTask = nil
             
             switch result {
@@ -54,8 +39,8 @@ final class ImagesListService {
                         size: CGSize(width: element.width, height: element.height),
                         createdAt: element.createdAt,
                         description: element.description,
-                        thumbImageURL: element.urls.thumb,
-                        lagreImageURL: element.urls.regular,
+                        fullImageURL: element.urls.full, // Взял ссылку full чтобы картинки не были шакальными
+                        rawImageURL: element.urls.raw,
                         isLiked: element.isLiked)
                 }
                 self?.photos.append(contentsOf: photosArray)
@@ -74,6 +59,8 @@ final class ImagesListService {
         self.sessionTask = task
         task.resume()
     }
+
+    // MARK: - Private Methods
     
     private func makeImagesRequest() -> URLRequest? {
         guard

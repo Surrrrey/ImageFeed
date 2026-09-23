@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
@@ -16,6 +17,13 @@ final class SingleImageViewController: UIViewController {
     
     private let backgroundColor = UIColor(resource: .ypBlackIOS)
     // MARK: - Properties
+    
+    var imageUrl: URL? {
+        didSet {
+            guard isViewLoaded else { return }
+            
+        }
+    }
     
     var image: UIImage? {
         didSet {

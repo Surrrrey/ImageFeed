@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ImagesListViewController: UIViewController {
     
@@ -6,6 +7,8 @@ final class ImagesListViewController: UIViewController {
     
     private var tableView = UITableView(frame: .zero, style: .plain)
     private let backgroundColor = UIColor(resource: .ypBlackIOS)
+    
+    private let placeholderHeight = CGSize(width: 343, height: 252)
     
     // MARK: - Properties
     
@@ -17,7 +20,11 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    private var ImagesListServiceObserver: NSObjectProtocol?
+    
     private let imagesListService = ImagesListService()
+    
+    private var photos: [Photo] = []
     
     // MARK: - Mock
     
@@ -27,6 +34,10 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addObs()
+        
+        fetchPhotos()
+        updateTableViewAnimated()
         
         view.backgroundColor = backgroundColor
         
@@ -54,6 +65,9 @@ final class ImagesListViewController: UIViewController {
         ])
     }
     
+    
+    // MARK: - Private Methods
+    
     private func registerCell() {
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
     }
@@ -63,23 +77,57 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    // MARK: - Private Methods
-    
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: "\(indexPath.row)") else { return }
+        cell.prepareForReuse()
+        
+        let photo = photos[indexPath.row]
         
         cell.selectionStyle = .none
         cell.backgroundColor = backgroundColor
         
-        cell.setupGradient()
-        cell.cellImage.image = image
-        cell.dateLabel.text = dateFormatter.string(from: Date())
+        cell.cellImage.contentMode = .scaleAspectFit
         
-        if indexPath.row % 2 == 0 {
+        cell.cellImage.kf.indicatorType = .activity
+        cell.cellImage.kf.setImage(with: photo.fullImageURL) { result in
+            switch result {
+            case .success:
+                cell.hidePlaceholder()
+            case .failure:
+                break
+            }
+        }
+        
+        
+        if let date = photo.createdAt {
+            cell.dateLabel.text = dateFormatter.string(from: date)
+        }
+        
+        if photo.isLiked {
             cell.likeButton.setImage(UIImage(resource: .heartActive), for: .normal)
         } else {
             cell.likeButton.setImage(UIImage(resource: .heartNoActive), for: .normal)
         }
+    }
+    
+    private func updateTableViewAnimated() {
+        let oldCount = photos.count
+        let newCount = imagesListService.photos.count
+        photos = imagesListService.photos
+        
+        if oldCount != newCount {
+            tableView.performBatchUpdates {
+                var indexPath: [IndexPath] = []
+                for index in oldCount..<newCount {
+                    indexPath.append(IndexPath(row: index, section: 0))
+                }
+                
+                tableView.insertRows(at: indexPath, with: .automatic)
+            } completion: { _ in }
+        }
+    }
+    
+    private func fetchPhotos() {
+        imagesListService.fetchPhotosNextPage { _ in }
     }
 }
 
@@ -88,7 +136,7 @@ final class ImagesListViewController: UIViewController {
 extension ImagesListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        photosName.count
+        photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -98,6 +146,7 @@ extension ImagesListViewController: UITableViewDataSource {
         { return UITableViewCell() }
         
         configCell(for: imageListCell, with: indexPath)
+        
         return imageListCell
     }
 }
@@ -107,10 +156,12 @@ extension ImagesListViewController: UITableViewDataSource {
 extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let image = UIImage(named: photosName[indexPath.row]) else { return }
-        
+        let photo = photos[indexPath.row]
+        let image = UIImage(resource: .stub)
         let singleImageViewController = SingleImageViewController()
         singleImageViewController.image = image
+        
+        singleImageViewController.imageUrl = photo.rawImageURL
         
         singleImageViewController.modalPresentationStyle = .fullScreen
         singleImageViewController.modalTransitionStyle = .crossDissolve
@@ -119,9 +170,10 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        guard let image = UIImage(named: "\(indexPath.row)") else { return 0 }
+        let image = photos[indexPath.row]
         
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
+        
         let imageWidth = image.size.width
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
         
@@ -135,9 +187,23 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView,
-                  willDisplay cell: UITableViewCell,
-                  forRowAt indexPath: IndexPath) {
+                   willDisplay cell: UITableViewCell,
+                   forRowAt indexPath: IndexPath) {
         guard indexPath.row + 1 == imagesListService.photos.count else { return }
-        //ImagesListService().fetchPhotosNextPage(completion: <#(Result<[Photo], any Error>) -> Void#>)
+        fetchPhotos()
+    }
+}
+
+// MARK: - Observer
+
+extension ImagesListViewController {
+    private func addObs() {
+        ImagesListServiceObserver = NotificationCenter.default.addObserver(
+            forName: ImagesListService.didChangeNotification,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                guard let self else { return }
+                self.updateTableViewAnimated()
+            }
     }
 }

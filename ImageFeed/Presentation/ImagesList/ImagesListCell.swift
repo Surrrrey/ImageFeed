@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
     
@@ -8,8 +9,12 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - Layout Properties
     
+    private let placeholder = UIImage(resource: .stub)
+    let placeholderView = UIImageView()
+    
     var cellImage = UIImageView()
     private let cornerRadius = 16.0
+    private let cellImageBackground = UIColor(resource: .ypWhiteAlpha50IOS)
     
     var likeButton = UIButton()
     private let likeButtonImage = UIImage(resource: .heartNoActive)
@@ -27,20 +32,45 @@ final class ImagesListCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         configCellImage()
+        configPlaceholder()
         configLikeButton()
         configDateLabel()
         configGradientLayer()
+        setupGradient()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        cellImage.kf.cancelDownloadTask()
+        
+        showPlaceholder()
+    }
+    
     // MARK: - Layout Methods
+    
+    private func configPlaceholder() {
+        placeholderView.image = placeholder
+        placeholderView.contentMode = .center
+        placeholderView.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(placeholderView)
+        
+        NSLayoutConstraint.activate([
+            placeholderView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            placeholderView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+    }
     
     private func configCellImage() {
         cellImage.layer.cornerRadius = cornerRadius
         cellImage.layer.masksToBounds = true
+        cellImage.backgroundColor = cellImageBackground
+        
         cellImage.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(cellImage)
@@ -102,11 +132,7 @@ final class ImagesListCell: UITableViewCell {
         ])
     }
     
-    // MARK: - Public Methods
-    
-    func setupGradient() {
-        gradientLayer = UIImageView()
-        
+    private func setupGradient() {
         gradientLayer.image = nil
         
         gradient.colors = [
@@ -121,4 +147,16 @@ final class ImagesListCell: UITableViewCell {
         
         gradientLayer.layer.addSublayer(gradient)
     }
+    
+    private func showPlaceholder() {
+        placeholderView.isHidden = false
+    }
+
+    // MARK: - Public Methods
+    
+
+    func hidePlaceholder() {
+        placeholderView.isHidden = true
+    }
+    
 }
