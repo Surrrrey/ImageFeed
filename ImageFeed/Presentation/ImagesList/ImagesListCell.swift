@@ -7,6 +7,8 @@ final class ImagesListCell: UITableViewCell {
     
     static let reuseIdentifier = "ImagesListCell"
     
+    weak var delegate: ImagesListCellDelegate?
+    
     // MARK: - Layout Properties
     
     private let placeholder = UIImage(resource: .stub)
@@ -99,7 +101,7 @@ final class ImagesListCell: UITableViewCell {
         
         let action = UIAction {[weak self] _ in
             guard let self else { return }
-            // TODO: LIKE BUTTON TAP
+            delegate?.imagesListCellDidTapLike(self)
         }
         
         likeButton.addAction(action, for: .touchUpInside)
@@ -153,7 +155,6 @@ final class ImagesListCell: UITableViewCell {
     }
 
     // MARK: - Public Methods
-    
 
     func hidePlaceholder() {
         placeholderView.isHidden = true

@@ -1,5 +1,9 @@
 import Foundation
 
+struct LikeResponseResult: Codable {
+    let photo: PhotoResult
+}
+
 struct PhotoResult: Codable {
     let id: String
     let height: Int

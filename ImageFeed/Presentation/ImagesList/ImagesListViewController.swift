@@ -79,6 +79,7 @@ final class ImagesListViewController: UIViewController {
     
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         cell.prepareForReuse()
+        cell.delegate = self
         
         let photo = photos[indexPath.row]
         
@@ -88,7 +89,7 @@ final class ImagesListViewController: UIViewController {
         cell.cellImage.contentMode = .scaleAspectFit
         
         cell.cellImage.kf.indicatorType = .activity
-        cell.cellImage.kf.setImage(with: photo.fullImageURL) { result in
+        cell.cellImage.kf.setImage(with: photo.regularImageURL) { result in
             switch result {
             case .success:
                 cell.hidePlaceholder()
@@ -157,11 +158,10 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let photo = photos[indexPath.row]
-        let image = UIImage(resource: .stub)
-        let singleImageViewController = SingleImageViewController()
-        singleImageViewController.image = image
         
-        singleImageViewController.imageUrl = photo.rawImageURL
+        let singleImageViewController = SingleImageViewController()
+        
+        singleImageViewController.imageUrl = photo.fullImageURL
         
         singleImageViewController.modalPresentationStyle = .fullScreen
         singleImageViewController.modalTransitionStyle = .crossDissolve
@@ -194,6 +194,40 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Cell Delegate
+
+extension ImagesListViewController: ImagesListCellDelegate {
+    func imagesListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        
+        imagesListService.changeLike(on: photo.id, from: photo.isLiked) { result in
+            switch result {
+            case .success(_):
+                self.photos = self.imagesListService.photos
+                
+                let updatedPhoto = self.photos[indexPath.row]
+                
+                if updatedPhoto.isLiked {
+                    cell.likeButton.setImage(UIImage(resource: .heartActive), for: .normal)
+                } else {
+                    cell.likeButton.setImage(UIImage(resource: .heartNoActive), for: .normal)
+                }
+                
+            case .failure(let error):
+                print("ChangeLikeError: \(error)")
+                if "\(error)" == "invalidLikeRequest" {
+                    AlertPresenter.shared.show(in: self, model: AlertModel(title: "Слишком частые запросы", message: "Не жмакай лайк так часто)", buttonText: "Не буду)") { })
+                } else {
+                    AlertPresenter.shared.show(in: self,
+                                               model: AlertModel(
+                                                title: "Что-то пошло не так(", message: "",
+                                                buttonText: "ОК") { })
+                }
+            }
+        }
+    }
+}
 // MARK: - Observer
 
 extension ImagesListViewController {

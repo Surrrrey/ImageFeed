@@ -8,4 +8,6 @@ enum Constants {
     static let userProfile = "/me"
     static let userPublicProfile = "/users/"
     static let photoList = "/photos"
+    static let findPhotoFromId = "\(photoList)/"
+    static let like = "/like"
 }
