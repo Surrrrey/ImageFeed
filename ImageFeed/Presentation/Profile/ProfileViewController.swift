@@ -21,6 +21,8 @@ final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
     
+    private let logoutService = ProfileLogoutService.shared
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -120,7 +122,7 @@ final class ProfileViewController: UIViewController {
         
         let action = UIAction() { [weak self] _ in
             guard let self else { return }
-            OAuth2TokenStorage.shared.removeToken()
+            logoutService.logout()
             switchToSplashView()
         }
         button.addAction(action, for: .touchUpInside)

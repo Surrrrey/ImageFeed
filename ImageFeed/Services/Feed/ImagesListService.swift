@@ -120,6 +120,10 @@ final class ImagesListService {
         task.resume()
     }
     
+    func removePhotosData() {
+        self.photos.removeAll()
+    }
+    
     // MARK: - Private Methods
     
     private func makeImagesRequest() -> URLRequest? {
@@ -131,21 +135,33 @@ final class ImagesListService {
         guard let token = storage.accessToken else { print("MakeImagesRequestError: Token = nil")
             return nil }
         
-        var request = URLRequest(url: imagesUrl)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
+
+        var components = URLComponents(url: imagesUrl, resolvingAgainstBaseURL: false)
+                
         if
             lastLoadedPage == nil {
             let actualLoadedPage = 1
-            lastLoadedPage = actualLoadedPage
-            request.setValue(String(actualLoadedPage), forHTTPHeaderField: "page")
+            self.lastLoadedPage = actualLoadedPage
+            components?.queryItems = [
+                URLQueryItem(name: "page", value: "\(actualLoadedPage)")
+            ]
         } else
         if var lastLoadedPage {
-            lastLoadedPage += 1
-            request.setValue(String(lastLoadedPage), forHTTPHeaderField: "page")
+            let actualLoadedPage = lastLoadedPage + 1
+            self.lastLoadedPage = actualLoadedPage
+            components?.queryItems = [
+                URLQueryItem(name: "page", value: "\(actualLoadedPage)")
+            ]
         }
         
+        guard let finalUrl = components?.url else {
+            print("FailedToBuildUrlWithQueryParams")
+            return nil }
+        
+        var request = URLRequest(url: finalUrl)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
         return request
     }
     

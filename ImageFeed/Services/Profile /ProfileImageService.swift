@@ -67,6 +67,10 @@ final class ProfileImageService {
         task.resume()
     }
     
+    func removeAvatarUrl() {
+        self.avatarURL = nil
+    }
+    
     // MARK: - Private Methods
     
     private func makeProfileImageRequest(_ username: String, token: String) -> URLRequest? {
