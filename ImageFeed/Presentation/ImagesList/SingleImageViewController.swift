@@ -20,13 +20,13 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Properties
     
     var imageUrl: URL?
-        
+    
     private let minZoomScale = 0.1
     private let maxZoomScale = 1.25
     
     private var marginWidth: Double = 0
     private var marginHeight: Double = 0
-        
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -133,19 +133,15 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func showError() {
-        let alert = UIAlertController(title: "Что-то пошло не так",
-                                      message: "Попробовать ещё раз?",
-                                      preferredStyle: .alert)
-        let firstAction = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+        let alert = AlertModel(title: "Что-то пошло не так",
+                               message: "Попробовать ещё раз?",
+                               firstButtonText: "Повторить",
+                               cancelButtonText: "Не надо") { [weak self] in
             self?.loadedFullImage()
         }
         
-        let secondAction = UIAlertAction(title: "Не надо", style: .cancel)
-        
-        alert.addAction(firstAction)
-        alert.addAction(secondAction)
-        
-        present(alert, animated: true)
+        AlertPresenter.shared.showTwoButtonAlert(in: self,
+                                                 model: alert)
     }
     
     private func rescaleImage(image: UIImage) {

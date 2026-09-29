@@ -51,7 +51,7 @@ final class ProfileViewController: UIViewController {
         profileImageView.image = image
         profileImageView.tintColor = .gray
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         view.addSubview(profileImageView)
         
         NSLayoutConstraint.activate([
@@ -122,8 +122,16 @@ final class ProfileViewController: UIViewController {
         
         let action = UIAction() { [weak self] _ in
             guard let self else { return }
-            logoutService.logout()
-            switchToSplashView()
+            
+            let alert = AlertModel(title: "Пока, пока!",
+                                   message: "Уверены, что хотите выйти?",
+                                   firstButtonText: "Да",
+                                   cancelButtonText: "Нет") {
+                self.logoutService.logout()
+                self.switchToSplashView()
+            }
+            
+            AlertPresenter.shared.showTwoButtonAlert(in: self, model: alert)
         }
         button.addAction(action, for: .touchUpInside)
     }

@@ -146,7 +146,7 @@ final class ImagesListService {
                 URLQueryItem(name: "page", value: "\(actualLoadedPage)")
             ]
         } else
-        if var lastLoadedPage {
+        if let lastLoadedPage {
             let actualLoadedPage = lastLoadedPage + 1
             self.lastLoadedPage = actualLoadedPage
             components?.queryItems = [

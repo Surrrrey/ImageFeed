@@ -217,12 +217,16 @@ extension ImagesListViewController: ImagesListCellDelegate {
             case .failure(let error):
                 print("ChangeLikeError: \(error)")
                 if "\(error)" == "invalidLikeRequest" {
-                    AlertPresenter.shared.show(in: self, model: AlertModel(title: "Слишком частые запросы", message: "Не жмакай лайк так часто)", buttonText: "Не буду)") { })
+                    AlertPresenter.shared.showOneButtonAlert(in: self,
+                                                             model: AlertModel(
+                                                                title: "Слишком частые запросы",
+                                                                message: "Не жмакай лайк так часто)",
+                                                                firstButtonText: "Не буду)") { })
                 } else {
-                    AlertPresenter.shared.show(in: self,
-                                               model: AlertModel(
-                                                title: "Что-то пошло не так(", message: "",
-                                                buttonText: "ОК") { })
+                    AlertPresenter.shared.showOneButtonAlert(in: self,
+                                                             model: AlertModel(
+                                                                title: "Что-то пошло не так(",
+                                                                firstButtonText: "ОК") { })
                 }
             }
         }
