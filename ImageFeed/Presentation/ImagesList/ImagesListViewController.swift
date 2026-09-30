@@ -103,11 +103,7 @@ final class ImagesListViewController: UIViewController {
             cell.dateLabel.text = dateFormatter.string(from: date)
         }
         
-        if photo.isLiked {
-            cell.likeButton.setImage(UIImage(resource: .heartActive), for: .normal)
-        } else {
-            cell.likeButton.setImage(UIImage(resource: .heartNoActive), for: .normal)
-        }
+        cell.likeButton.setImage(UIImage(resource: photo.isLiked ? .heartActive : .heartNoActive), for: .normal)
     }
     
     private func updateTableViewAnimated() {
@@ -203,16 +199,12 @@ extension ImagesListViewController: ImagesListCellDelegate {
         
         imagesListService.changeLike(on: photo.id, from: photo.isLiked) { result in
             switch result {
-            case .success(_):
+            case .success:
                 self.photos = self.imagesListService.photos
                 
                 let updatedPhoto = self.photos[indexPath.row]
                 
-                if updatedPhoto.isLiked {
-                    cell.likeButton.setImage(UIImage(resource: .heartActive), for: .normal)
-                } else {
-                    cell.likeButton.setImage(UIImage(resource: .heartNoActive), for: .normal)
-                }
+                cell.likeButton.setImage(UIImage(resource: updatedPhoto.isLiked ? .heartActive : .heartNoActive), for: .normal)
                 
             case .failure(let error):
                 print("ChangeLikeError: \(error)")

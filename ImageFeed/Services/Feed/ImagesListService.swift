@@ -223,7 +223,7 @@ final class ImagesListService {
 // MARK: = Notification
 
 extension ImagesListService {
-    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     
     private enum NotificationKeys {
         static let photos = "Photos"
