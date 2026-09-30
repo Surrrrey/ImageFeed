@@ -16,31 +16,7 @@ final class OAuth2FetchService {
     private var sessionTask: URLSessionTask?
     private var lastCode: String?
     
-    // MARK: - Private Methods
-    
-    private func makeAuthTokenRequest(code: String) -> URLRequest? {
-        guard
-            var urlComponents = URLComponents(string: WebConstants.unsplashTokenURLString)
-        else { print("URLComponentsForTokenConfigureError")
-            return nil }
-        
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "client_secret", value: Constants.secretKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code")
-        ]
-        
-        guard let authTokenUrl = urlComponents.url else {
-            print("TokenURLError")
-            return nil
-        }
-        
-        var request = URLRequest(url: authTokenUrl)
-        request.httpMethod = "POST"
-        return request
-    }
+    // MARK: - Public Methods
     
     func fetchOAuthToken(code: String,
                          completion: @escaping (Swift.Result<String, Error>) -> Void) {
@@ -87,5 +63,31 @@ final class OAuth2FetchService {
         
         self.sessionTask = task
         task.resume()
+    }
+    
+    // MARK: - Private Methods
+    
+    private func makeAuthTokenRequest(code: String) -> URLRequest? {
+        guard
+            var urlComponents = URLComponents(string: WebConstants.unsplashTokenURLString)
+        else { print("URLComponentsForTokenConfigureError")
+            return nil }
+        
+        urlComponents.queryItems = [
+            URLQueryItem(name: "client_id", value: Constants.accessKey),
+            URLQueryItem(name: "client_secret", value: Constants.secretKey),
+            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "code", value: code),
+            URLQueryItem(name: "grant_type", value: "authorization_code")
+        ]
+        
+        guard let authTokenUrl = urlComponents.url else {
+            print("TokenURLError")
+            return nil
+        }
+        
+        var request = URLRequest(url: authTokenUrl)
+        request.httpMethod = "POST"
+        return request
     }
 }

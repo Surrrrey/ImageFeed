@@ -19,7 +19,7 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
     
     private let storage: KeychainWrapper = .standard
     
-    var accessToken: String? {
+    private(set) var accessToken: String? {
         get {
             storage.string(forKey: Keys.accessToken.rawValue)
         }
@@ -35,7 +35,7 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
         }
     }
     
-    var tokenType: String? {
+    private(set) var tokenType: String? {
         get {
             storage.string(forKey: Keys.tokenType.rawValue)
         }
@@ -51,7 +51,7 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
         }
     }
     
-    var scope: String? {
+    private(set) var scope: String? {
         get {
             storage.string(forKey: Keys.scope.rawValue)
         }
@@ -67,7 +67,7 @@ final class OAuth2TokenStorage: OAuth2StorageProtocol {
         }
     }
     
-    var createdId: Int? {
+    private(set) var createdId: Int? {
         get {
             storage.integer(forKey: Keys.createdId.rawValue)
         }

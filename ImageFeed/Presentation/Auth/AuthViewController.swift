@@ -126,7 +126,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
     private func showAuthError() {
         let alert = AlertModel(title: "Что-то пошло не так(",
                                message: "Не удалось войти в систему",
-                               buttonText: "ОК") { }
-        AlertPresenter().show(in: self, model: alert)
+                               firstButtonText: "ОК") { }
+        AlertPresenter().showOneButtonAlert(in: self, model: alert)
     }
 }

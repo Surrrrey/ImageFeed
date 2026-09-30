@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
@@ -15,28 +16,22 @@ final class SingleImageViewController: UIViewController {
     private let backButtonWidthAndHeight = 24.0
     
     private let backgroundColor = UIColor(resource: .ypBlackIOS)
+    
     // MARK: - Properties
     
-    var image: UIImage? {
-        didSet {
-            guard isViewLoaded else { return }
-            singleImage.image = image
-            
-            guard let image else { return }
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
+    var imageUrl: URL?
     
     private let minZoomScale = 0.1
     private let maxZoomScale = 1.25
     
     private var marginWidth: Double = 0
     private var marginHeight: Double = 0
-        
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadedFullImage()
         
         configScrollView()
         configSingleImageView()
@@ -46,12 +41,10 @@ final class SingleImageViewController: UIViewController {
         
         scrollView.delegate = self
         
-        guard let image else { return }
-
-        singleImage.image = image
-        
-        rescaleAndCenterImageInScrollView(image: image)
         scrollView.layoutIfNeeded()
+        
+        guard let image = singleImage.image else { return }
+        rescaleAndCenterImageInScrollView(image: image)
     }
     
     // MARK: - Layout Methods
@@ -93,7 +86,7 @@ final class SingleImageViewController: UIViewController {
         ])
         
         let action = UIAction { [weak self] _ in
-            guard let image = self?.image else { return }
+            guard let image = self?.singleImage.image else { return }
             let sharePanel = UIActivityViewController(activityItems: [image], applicationActivities: nil)
             
             self?.present(sharePanel, animated: true)
@@ -123,6 +116,34 @@ final class SingleImageViewController: UIViewController {
     
     // MARK: - Private Methods
     
+    private func loadedFullImage() {
+        UIBlockingProgressHUD.show()
+        
+        singleImage.kf.setImage(with: imageUrl) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure(_):
+                showError()
+            }
+        }
+    }
+    
+    private func showError() {
+        let alert = AlertModel(title: "Что-то пошло не так",
+                               message: "Попробовать ещё раз?",
+                               firstButtonText: "Повторить",
+                               cancelButtonText: "Не надо") { [weak self] in
+            self?.loadedFullImage()
+        }
+        
+        AlertPresenter.shared.showTwoButtonAlert(in: self,
+                                                 model: alert)
+    }
+    
     private func rescaleImage(image: UIImage) {
         
         view.layoutIfNeeded()
@@ -139,9 +160,9 @@ final class SingleImageViewController: UIViewController {
         let vScale = visibleRectSize.height / imageSize.height
         
         let calculatedScale = min(hScale, vScale)
-        let scale = min(maxZoomScale, max(minZoomScale, calculatedScale))
         
-        scrollView.setZoomScale(scale, animated: false)
+        scrollView.minimumZoomScale = calculatedScale
+        scrollView.setZoomScale(calculatedScale, animated: false)
     }
     
     private func centerImage(image: UIImage) {
