@@ -3,7 +3,7 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    // MARK: - Layout
+    // MARK: - Layout Properties
     
     private var profileImage = UIImage(systemName: "person.crop.circle.fill")
     private var profileImageView = UIImageView()
@@ -126,10 +126,11 @@ final class ProfileViewController: UIViewController {
             let alert = AlertModel(title: "Пока, пока!",
                                    message: "Уверены, что хотите выйти?",
                                    firstButtonText: "Да",
-                                   cancelButtonText: "Нет") {
+                                   secondButtonText: "Нет",
+                                   firstCompletion: {
                 self.logoutService.logout()
                 self.switchToSplashView()
-            }
+            })
             
             AlertPresenter.shared.showTwoButtonAlert(in: self, model: alert)
         }

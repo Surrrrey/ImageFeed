@@ -136,9 +136,10 @@ final class SingleImageViewController: UIViewController {
         let alert = AlertModel(title: "Что-то пошло не так",
                                message: "Попробовать ещё раз?",
                                firstButtonText: "Повторить",
-                               cancelButtonText: "Не надо") { [weak self] in
+                               secondButtonText: "Не надо",
+                               firstCompletion: { [weak self] in
             self?.loadedFullImage()
-        }
+        })
         
         AlertPresenter.shared.showTwoButtonAlert(in: self,
                                                  model: alert)

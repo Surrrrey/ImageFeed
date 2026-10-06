@@ -91,8 +91,14 @@ final class AuthViewController: UIViewController {
     // MARK: - Private Methods
     
     private func showWebView() {
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
         let webViewController = WebViewViewController()
+        
+        webViewPresenter.view = webViewController
+        webViewController.presenter = webViewPresenter
         webViewController.delegate = self
+        
         navigationController?.navigationBar.isHidden = false
         navigationController?.pushViewController(webViewController, animated: true)
     }
@@ -118,11 +124,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             }
         }
     }
-    
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        vc.dismiss(animated: true)
-    }
-    
+        
     private func showAuthError() {
         let alert = AlertModel(title: "Что-то пошло не так(",
                                message: "Не удалось войти в систему",

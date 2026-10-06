@@ -89,7 +89,7 @@ extension SplashViewController {
         guard let token = storage.accessToken else { return }
         
         UIBlockingProgressHUD.show()
-
+        
         profileService.fetchProfile(token: token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             guard let self else { return }
@@ -100,7 +100,20 @@ extension SplashViewController {
                 switchToTabBarController()
             case .failure(let error):
                 print(error)
-                //TODO: Обработать ошибку получения профиля
+                let alertModel = AlertModel(
+                    title: "Что-то пошлло не так(",
+                    message: "Ошибка получения профиля",
+                    firstButtonText: "Попробовать снова",
+                    secondButtonText: "Выйти из профиля",
+                    firstCompletion: { [weak self] in
+                        guard let self else { return }
+                        self.fetchProfile() },
+                    secondCompletion: { [weak self] in
+                        guard let self else { return }
+                        ProfileLogoutService.shared.logout()
+                        showAuthView()
+                    })
+                AlertPresenter.shared.showTwoButtonAlert(in: self, model: alertModel)
                 break
             }
         }

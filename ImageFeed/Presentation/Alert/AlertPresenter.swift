@@ -10,7 +10,7 @@ final class AlertPresenter {
                                       preferredStyle: .alert)
         let action = UIAlertAction(title: model.firstButtonText,
                                    style: .default) { _ in
-            model.completion()
+            model.firstCompletion()
         }
         alert.addAction(action)
         
@@ -23,13 +23,16 @@ final class AlertPresenter {
                                       preferredStyle: .alert)
         
         let firstAction = UIAlertAction(title: model.firstButtonText, style: .default) { _ in
-            model.completion()
+            model.firstCompletion()
         }
         
-        let cancelAction = UIAlertAction(title: model.cancelButtonText, style: .default)
+        let secondAction = UIAlertAction(title: model.secondButtonText, style: .default) { _ in
+            if let completion = model.secondCompletion {
+                completion() }
+        }
         
         alert.addAction(firstAction)
-        alert.addAction(cancelAction)
+        alert.addAction(secondAction)
 
         vc.present(alert, animated: true)
     }

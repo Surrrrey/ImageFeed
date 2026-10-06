@@ -20,8 +20,9 @@ final class ImagesListService {
     
     private var isCreatingLikeChangeTaskWithThisId = [String]()
     
-
     private let storage = OAuth2TokenStorage.shared
+    
+    private let configuration: AuthConfiguration = .standard
     
     // MARK: - Public Methods
     
@@ -99,14 +100,14 @@ final class ImagesListService {
             switch result {
             case .success(let photoResult):
                 let newPhoto =
-                    Photo(
-                        id: photoResult.photo.id,
-                        size: CGSize(width: photoResult.photo.width, height: photoResult.photo.height),
-                        createdAt: photoResult.photo.createdAt,
-                        description: photoResult.photo.description,
-                        regularImageURL: photoResult.photo.urls.regular,
-                        fullImageURL: photoResult.photo.urls.full,
-                        isLiked: photoResult.photo.isLiked)
+                Photo(
+                    id: photoResult.photo.id,
+                    size: CGSize(width: photoResult.photo.width, height: photoResult.photo.height),
+                    createdAt: photoResult.photo.createdAt,
+                    description: photoResult.photo.description,
+                    regularImageURL: photoResult.photo.urls.regular,
+                    fullImageURL: photoResult.photo.urls.full,
+                    isLiked: photoResult.photo.isLiked)
                 
                 self?.updatePhoto(with: newPhoto)
                 completion(.success(newPhoto))
@@ -128,16 +129,16 @@ final class ImagesListService {
     
     private func makeImagesRequest() -> URLRequest? {
         guard
-            let imagesUrl = URL(string: Constants.defaultBaseURLString + Constants.photoList)
+            let imagesUrl = URL(string: configuration.defaultBaseURLString + configuration.photoList)
         else { print("URLForImagesListRequestConfigureError")
             return nil }
         
         guard let token = storage.accessToken else { print("MakeImagesRequestError: Token = nil")
             return nil }
         
-
+        
         var components = URLComponents(url: imagesUrl, resolvingAgainstBaseURL: false)
-                
+        
         if
             lastLoadedPage == nil {
             let actualLoadedPage = 1
@@ -161,7 +162,7 @@ final class ImagesListService {
         var request = URLRequest(url: finalUrl)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-
+        
         return request
     }
     
@@ -195,18 +196,18 @@ final class ImagesListService {
     
     private func createRequestForLikeChange(for photoId: String) -> URLRequest? {
         guard let photosLikeUrl = URL(string:
-                                        Constants.defaultBaseURLString +
-                                      Constants.findPhotoFromId +
+                                        configuration.defaultBaseURLString +
+                                      configuration.findPhotoFromId +
                                       photoId +
-                                      Constants.like
+                                      configuration.like
         ) else { print("URLForSetLikeRequestConfigureError")
             return nil }
         
         guard let token = storage.accessToken else { print("MakeSetLikeRequestError: Token = nil")
-        return nil }
+            return nil }
         
         var request = URLRequest(url: photosLikeUrl)
-
+        
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         return request

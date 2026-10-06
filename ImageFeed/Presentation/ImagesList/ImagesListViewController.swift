@@ -25,11 +25,7 @@ final class ImagesListViewController: UIViewController {
     private let imagesListService = ImagesListService()
     
     private var photos: [Photo] = []
-    
-    // MARK: - Mock
-    
-    private let photosName: [String] = Array(0...19).map{ "\($0)" }
-    
+        
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
