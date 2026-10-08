@@ -1,12 +1,20 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+// MARK: - Protocol
+
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    var profileImage: UIImage { get set }
+    var profileImageView: UIImageView { get set }
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
     
     // MARK: - Layout Properties
     
-    private var profileImage = UIImage(systemName: "person.crop.circle.fill")
-    private var profileImageView = UIImageView()
+    var profileImage: UIImage = UIImage(systemName: "person.crop.circle.fill") ?? UIImage(resource: .personCropCircleFill)
+    var profileImageView = UIImageView()
     private let profileImageViewHeightAndWidth = 70.0
     
     private var profileName = UILabel()
@@ -16,6 +24,8 @@ final class ProfileViewController: UIViewController {
     private var button = UIButton()
     
     // MARK: - Properties
+    
+    var presenter: ProfileViewPresenterProtocol?
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -30,13 +40,12 @@ final class ProfileViewController: UIViewController {
         
         view.backgroundColor = .ypBlackIOS
         
-        if let profileImage { configurationProfileImage(image: profileImage) }
-        
+        configurationProfileImage(image: profileImage)
         configureUILabels(with: profileService.profile)
         configurationButton()
         
         addObs()
-        updateAvatar()
+        presenter?.updateAvatar()
     }
     
     deinit {
@@ -159,30 +168,19 @@ final class ProfileViewController: UIViewController {
     // MARK: - Private Methods
     
     private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.textColor = color
-        label.font = font
+        var label = UILabel()
+        
+        guard let presenter else { return label }
+        
+        label = presenter.configLabel(text: text, color: color, font: font)
         
         return label
     }
-    
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
         
-        profileImageView.kf.setImage(with: profileImageURL,
-                                     placeholder: profileImage)
-    }
-    
     private func switchToSplashView() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        
         let splashViewController = SplashViewController()
-        window.rootViewController = splashViewController
-        window.makeKeyAndVisible()
+        
+        ViewControllerSwitcher().switchToNewRootController(newController: splashViewController)
     }
 }
 
@@ -198,7 +196,7 @@ extension ProfileViewController {
                 queue: .main,
             ) { [weak self] _ in
                 guard let self else { return }
-                self.updateAvatar()
+                presenter?.updateAvatar()
             }
     }
 }

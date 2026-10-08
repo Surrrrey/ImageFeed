@@ -99,8 +99,7 @@ final class AuthViewController: UIViewController {
         webViewController.presenter = webViewPresenter
         webViewController.delegate = self
         
-        navigationController?.navigationBar.isHidden = false
-        navigationController?.pushViewController(webViewController, animated: true)
+        ViewControllerSwitcher().pushViewController(self: self, webViewController)
     }
 }
 

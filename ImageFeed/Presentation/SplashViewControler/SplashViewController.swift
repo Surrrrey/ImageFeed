@@ -53,23 +53,12 @@ final class SplashViewController: UIViewController {
         let authViewController = AuthViewController()
         authViewController.delegate = self
         
-        let navigationController = UINavigationController(rootViewController: authViewController)
-        
-        navigationController.modalPresentationStyle = .fullScreen
-        navigationController.navigationBar.isHidden = true
-        
-        present(navigationController, animated: true)
+        ViewControllerSwitcher().presentNavigationRootController(self: self, authViewController, isHiddenNavigationBar: true)
     }
     
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        
         let tabBarController = TabBarController()
-        window.rootViewController = tabBarController
-        window.makeKeyAndVisible()
+        ViewControllerSwitcher().switchToNewRootController(newController: tabBarController)
     }
 }
 
