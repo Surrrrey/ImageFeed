@@ -12,8 +12,9 @@
 		5795D9863074F18F0071D354 /* WebViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D9853074F1850071D354 /* WebViewPresenter.swift */; };
 		5795D98A30751C2E0071D354 /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D98930751C290071D354 /* AuthHelper.swift */; };
 		5795D99B30768C620071D354 /* ProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D99A30768C5A0071D354 /* ProfileViewPresenter.swift */; };
-		5795D99D3077E17E0071D354 /* RootControllerSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D99C3077E17A0071D354 /* RootControllerSwitcher.swift */; };
+		5795D99D3077E17E0071D354 /* ViewControllerSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D99C3077E17A0071D354 /* ViewControllerSwitcher.swift */; };
 		5795D9A13077F1FA0071D354 /* ImageListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D9A03077F1CF0071D354 /* ImageListPresenter.swift */; };
+		5795D9A43078B42B0071D354 /* TableViewConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5795D9A33078B4220071D354 /* TableViewConfigurator.swift */; };
 		57A23DB330517171005E0AD1 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 57A23DB230517171005E0AD1 /* Kingfisher */; };
 		57A23E003054481A005E0AD1 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 57A23DFF3054481A005E0AD1 /* SwiftKeychainWrapper */; };
 		57EB693E306D6F71005F836D /* AuthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EB6907306D6F71005F836D /* AuthConfiguration.swift */; };
@@ -68,8 +69,9 @@
 		5795D98930751C290071D354 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		5795D98F307621310071D354 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5795D99A30768C5A0071D354 /* ProfileViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewPresenter.swift; sourceTree = "<group>"; };
-		5795D99C3077E17A0071D354 /* RootControllerSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootControllerSwitcher.swift; sourceTree = "<group>"; };
+		5795D99C3077E17A0071D354 /* ViewControllerSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerSwitcher.swift; sourceTree = "<group>"; };
 		5795D9A03077F1CF0071D354 /* ImageListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListPresenter.swift; sourceTree = "<group>"; };
+		5795D9A33078B4220071D354 /* TableViewConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewConfigurator.swift; sourceTree = "<group>"; };
 		57EB6907306D6F71005F836D /* AuthConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthConfiguration.swift; sourceTree = "<group>"; };
 		57EB690A306D6F71005F836D /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		57EB690B306D6F71005F836D /* URLSession+Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Data+Extension.swift"; sourceTree = "<group>"; };
@@ -195,6 +197,14 @@
 			path = SingleImageView;
 			sourceTree = "<group>";
 		};
+		5795D9A23078B4120071D354 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				5795D9A33078B4220071D354 /* TableViewConfigurator.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		57EB6909306D6F71005F836D /* Constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -206,7 +216,7 @@
 		57EB690C306D6F71005F836D /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				5795D99C3077E17A0071D354 /* RootControllerSwitcher.swift */,
+				5795D99C3077E17A0071D354 /* ViewControllerSwitcher.swift */,
 				5795D98930751C290071D354 /* AuthHelper.swift */,
 				57EB690A306D6F71005F836D /* UIBlockingProgressHUD.swift */,
 				57EB690B306D6F71005F836D /* URLSession+Data+Extension.swift */,
@@ -253,6 +263,7 @@
 		57EB691B306D6F71005F836D /* ImagesList */ = {
 			isa = PBXGroup;
 			children = (
+				5795D9A23078B4120071D354 /* Helpers */,
 				5795D99E3077F1A90071D354 /* Presenter */,
 				57EB6917306D6F71005F836D /* Delegates */,
 				57EB6918306D6F71005F836D /* ImagesListCell.swift */,
@@ -507,6 +518,7 @@
 				57EB6942306D6F71005F836D /* AlertModel.swift in Sources */,
 				57EB6943306D6F71005F836D /* AlertPresenter.swift in Sources */,
 				57EB6944306D6F71005F836D /* AuthViewControllerDelegate.swift in Sources */,
+				5795D9A43078B42B0071D354 /* TableViewConfigurator.swift in Sources */,
 				57EB6945306D6F71005F836D /* WebViewViewControllerDelegate.swift in Sources */,
 				57EB6946306D6F71005F836D /* AuthViewController.swift in Sources */,
 				57EB6947306D6F71005F836D /* WebViewViewController.swift in Sources */,
@@ -517,7 +529,7 @@
 				57EB694B306D6F71005F836D /* SingleImageViewController.swift in Sources */,
 				5795D98A30751C2E0071D354 /* AuthHelper.swift in Sources */,
 				57EB694C306D6F71005F836D /* ProfileViewController.swift in Sources */,
-				5795D99D3077E17E0071D354 /* RootControllerSwitcher.swift in Sources */,
+				5795D99D3077E17E0071D354 /* ViewControllerSwitcher.swift in Sources */,
 				57EB694D306D6F71005F836D /* SplashViewController.swift in Sources */,
 				57EB694E306D6F71005F836D /* TabBarController.swift in Sources */,
 				57EB694F306D6F71005F836D /* OAuth2FetchService.swift in Sources */,

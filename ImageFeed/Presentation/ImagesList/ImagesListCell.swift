@@ -9,6 +9,14 @@ final class ImagesListCell: UITableViewCell {
     
     weak var delegate: ImagesListCellDelegate?
     
+    static var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "ru_RU")
+        return formatter
+    }()
+    
     // MARK: - Layout Properties
     
     private let placeholder = UIImage(resource: .stub)
@@ -51,6 +59,37 @@ final class ImagesListCell: UITableViewCell {
         cellImage.kf.cancelDownloadTask()
         
         showPlaceholder()
+    }
+
+    // MARK: - Public Methods
+
+    func hidePlaceholder() {
+        placeholderView.isHidden = true
+    }
+    
+    func configCell(with photo: Photo) {
+        
+        selectionStyle = .none
+        backgroundColor = UIColor(resource: .ypBlackIOS)
+        
+        cellImage.contentMode = .scaleAspectFit
+        
+        cellImage.kf.indicatorType = .activity
+        cellImage.kf.setImage(with: photo.regularImageURL) { [weak self] result in
+            switch result {
+            case .success:
+                self?.hidePlaceholder()
+            case .failure:
+                break
+            }
+        }
+        
+        if let date = photo.createdAt {
+            dateLabel.text = ImagesListCell.dateFormatter.string(from: date)
+        }
+        
+        likeButton.setImage(UIImage(resource: photo.isLiked ? .heartActive : .heartNoActive), for: .normal)
+
     }
     
     // MARK: - Layout Methods
@@ -153,11 +192,4 @@ final class ImagesListCell: UITableViewCell {
     private func showPlaceholder() {
         placeholderView.isHidden = false
     }
-
-    // MARK: - Public Methods
-
-    func hidePlaceholder() {
-        placeholderView.isHidden = true
-    }
-    
 }

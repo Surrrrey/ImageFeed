@@ -10,6 +10,8 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Properties
     
+    private var navigationHandler: ViewControllerSwitcherProtocol?
+    
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
@@ -53,12 +55,17 @@ final class SplashViewController: UIViewController {
         let authViewController = AuthViewController()
         authViewController.delegate = self
         
-        ViewControllerSwitcher().presentNavigationRootController(self: self, authViewController, isHiddenNavigationBar: true)
+        navigationHandler = ViewControllerSwitcher()
+            
+            navigationHandler?.presentNavigationRootController(self: self, authViewController, isHiddenNavigationBar: true)
     }
     
     private func switchToTabBarController() {
         let tabBarController = TabBarController()
-        ViewControllerSwitcher().switchToNewRootController(newController: tabBarController)
+        
+        navigationHandler = ViewControllerSwitcher()
+        
+        navigationHandler?.switchToNewRootController(newController: tabBarController)
     }
 }
 
@@ -86,7 +93,7 @@ extension SplashViewController {
             switch result {
             case .success(let profile):
                 profileImageService.fetchProfileImageURL(token: token, username: profile.login) { _ in }
-                switchToTabBarController()
+                self.switchToTabBarController()
             case .failure(let error):
                 print(error)
                 let alertModel = AlertModel(

@@ -138,7 +138,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
                                    secondButtonText: "Нет",
                                    firstCompletion: {
                 self.logoutService.logout()
-                self.switchToSplashView()
+                self.presenter?.switchToSplashView()
             })
             
             AlertPresenter.shared.showTwoButtonAlert(in: self, model: alert)
@@ -175,12 +175,6 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         label = presenter.configLabel(text: text, color: color, font: font)
         
         return label
-    }
-        
-    private func switchToSplashView() {
-        let splashViewController = SplashViewController()
-        
-        ViewControllerSwitcher().switchToNewRootController(newController: splashViewController)
     }
 }
 

@@ -17,6 +17,7 @@ final class AuthViewController: UIViewController {
     private let buttonCornerRadius = 16.0
     
     // MARK: - Properties
+    private var navigationHandler: ViewControllerSwitcherProtocol?
     
     private let oAuth2Service = OAuth2FetchService.shared
     
@@ -99,14 +100,22 @@ final class AuthViewController: UIViewController {
         webViewController.presenter = webViewPresenter
         webViewController.delegate = self
         
-        ViewControllerSwitcher().pushViewController(self: self, webViewController)
+        navigationHandler = ViewControllerSwitcher()
+        
+        navigationHandler?.pushViewController(self: self, webViewController)
     }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true)
+        //vc.dismiss(animated: true)
+        //TODO: - Check try bugfix
+        //
+        //
+        //
+        //
+        //
         
         UIBlockingProgressHUD.show()
         

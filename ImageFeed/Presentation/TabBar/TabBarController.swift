@@ -20,8 +20,9 @@ final class TabBarController: UITabBarController {
         tabBar.backgroundColor = .ypBlackIOS
         tabBar.isTranslucent = false
         
+        let service = ImagesListService()
         let imagesListViewController = ImagesListViewController()
-        let imagesListPresenter = ImageListPresenter()
+        let imagesListPresenter = ImageListPresenter(imageListService: service)
         imagesListViewController.presenter = imagesListPresenter
         imagesListPresenter.view = imagesListViewController
         
