@@ -5,7 +5,6 @@ import Kingfisher
 
 protocol ProfileViewControllerProtocol: AnyObject {
     var presenter: ProfileViewPresenterProtocol? { get set }
-    var profileImage: UIImage { get set }
     var profileImageView: UIImageView { get set }
 }
 
@@ -13,7 +12,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     
     // MARK: - Layout Properties
     
-    var profileImage: UIImage = UIImage(systemName: "person.crop.circle.fill") ?? UIImage(resource: .personCropCircleFill)
+    let profileImage = UIImage(systemName: "person.crop.circle.fill")
     var profileImageView = UIImageView()
     private let profileImageViewHeightAndWidth = 70.0
     
@@ -39,8 +38,8 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlackIOS
-        
-        configurationProfileImage(image: profileImage)
+        if let profileImage {
+            configurationProfileImage(image: profileImage) }
         configureUILabels(with: profileService.profile)
         configurationButton()
         
@@ -170,10 +169,10 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
         var label = UILabel()
         
-        guard let presenter else { return label }
-        
-        label = presenter.configLabel(text: text, color: color, font: font)
-        
+        label.text = text
+        label.textColor = color
+        label.font = font
+
         return label
     }
 }
