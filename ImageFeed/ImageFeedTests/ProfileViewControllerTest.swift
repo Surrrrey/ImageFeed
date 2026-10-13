@@ -17,7 +17,7 @@ final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
     }
 }
 
-final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
+final class ProfileViewControllerMock: ProfileViewControllerProtocol {
     var presenter: ProfileViewPresenterProtocol?
         
     var profileImageView = UIImageView()
@@ -28,7 +28,7 @@ final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
 final class ProfileViewTest: XCTestCase {
     
     func testUpdateAvatarDoesNothingWithoutURL() {
-        let view = ProfileViewControllerSpy()
+        let view = ProfileViewControllerMock()
         let presenter = ProfileViewPresenter()
         view.presenter = presenter
         presenter.view = view

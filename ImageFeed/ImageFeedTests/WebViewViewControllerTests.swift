@@ -42,6 +42,7 @@ final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
 }
 
 // MARK: - TESTS
+
 final class WebViewTest: XCTestCase {
     
     func testViewControllerCallsLoadRequest() {

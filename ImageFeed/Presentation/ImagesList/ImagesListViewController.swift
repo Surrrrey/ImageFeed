@@ -2,9 +2,11 @@ import UIKit
 import Kingfisher
 
 protocol ImagesListViewControllerProtocol: AnyObject {
-    var presenter: ImageListPresenterProtocol? { get set }
+    var presenter: ImagesListPresenterProtocol? { get set }
     
     func updateTableViewAnimated(oldCount: Int, newCount: Int)
+    func showLikeSpamError()
+    func showUnknownError()
 }
 
 final class ImagesListViewController: UIViewController & ImagesListViewControllerProtocol {
@@ -20,7 +22,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
     
     var navigationHandler: ViewControllerSwitcherProtocol?
     
-    var presenter: ImageListPresenterProtocol?
+    var presenter: ImagesListPresenterProtocol?
     
     private var ImagesListServiceObserver: NSObjectProtocol?
     
@@ -30,7 +32,7 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
         super.viewDidLoad()
         addObs()
         
-        presenter?.imagesListService.fetchPhotosNextPage { _ in }
+        presenter?.serviceFetchPhotos()
         presenter?.updatePhotosArrayAndTableView()
         
         view.backgroundColor = backgroundColor
@@ -72,6 +74,21 @@ final class ImagesListViewController: UIViewController & ImagesListViewControlle
                 tableView.insertRows(at: indexPath, with: .automatic)
             } completion: { _ in }
         }
+    }
+    
+    func showLikeSpamError() {
+        AlertPresenter.shared.showOneButtonAlert(in: self,
+                                                 model: AlertModel(
+                                                    title: "Слишком частые запросы",
+                                                    message: "Не жмакай лайк так часто)",
+                                                    firstButtonText: "Не буду)") { })
+    }
+    
+    func showUnknownError() {
+        AlertPresenter.shared.showOneButtonAlert(in: self,
+                                                 model: AlertModel(
+                                                    title: "Что-то пошло не так(",
+                                                    firstButtonText: "ОК") { })
     }
     
     // MARK: - Private Methods
@@ -166,31 +183,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
         
         guard let photo, let presenter else { return }
         
-        presenter.imagesListService.changeLike(on: photo.id, from: photo.isLiked) { result in
-            switch result {
-            case .success:
-                presenter.photos = presenter.imagesListService.photos
-                
-                let updatedPhoto = presenter.photos[indexPath.row]
-                
-                cell.likeButton.setImage(UIImage(resource: updatedPhoto.isLiked ? .heartActive : .heartNoActive), for: .normal)
-                
-            case .failure(let error):
-                print("ChangeLikeError: \(error)")
-                if "\(error)" == "invalidLikeRequest" {
-                    AlertPresenter.shared.showOneButtonAlert(in: self,
-                                                             model: AlertModel(
-                                                                title: "Слишком частые запросы",
-                                                                message: "Не жмакай лайк так часто)",
-                                                                firstButtonText: "Не буду)") { })
-                } else {
-                    AlertPresenter.shared.showOneButtonAlert(in: self,
-                                                             model: AlertModel(
-                                                                title: "Что-то пошло не так(",
-                                                                firstButtonText: "ОК") { })
-                }
-            }
-        }
+        presenter.changeLike(in: cell, on: photo.id, from: photo.isLiked, indexPath: indexPath)
     }
 }
 // MARK: - Observer
