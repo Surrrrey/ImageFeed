@@ -65,6 +65,7 @@ final class AuthViewController: UIViewController {
         button.titleLabel?.textColor = .ypBlackIOS
         button.titleLabel?.font = buttonFont
         button.layer.cornerRadius = buttonCornerRadius
+        button.accessibilityIdentifier = "Authenticate"
         button.translatesAutoresizingMaskIntoConstraints = false
         
         button.addAction(UIAction { [weak self] _ in

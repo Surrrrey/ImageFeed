@@ -127,6 +127,7 @@ final class ImagesListCell: UITableViewCell {
     private func configLikeButton() {
         likeButton.setImage(likeButtonImage, for: .normal)
         likeButton.setTitle(nil, for: .normal)
+        likeButton.accessibilityIdentifier = "like button off"
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(likeButton)

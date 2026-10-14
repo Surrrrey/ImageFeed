@@ -117,6 +117,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     private func configurationButton() {
         button.setImage(UIImage(resource: .exit), for: .normal)
         button.tintColor = .ypRedIOS
+        button.accessibilityIdentifier = "logout button"
         button.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(button)

@@ -57,6 +57,7 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                 guard let updatedPhoto = self?.photos[indexPath.row] else { return }
                 
                 cell.likeButton.setImage(UIImage(resource: updatedPhoto.isLiked ? .heartActive : .heartNoActive), for: .normal)
+                self?.changeAccessibilityIdentifierForButton(in: cell)
                 
             case .failure(let error):
                 print("ChangeLikeError: \(error)")
@@ -68,6 +69,13 @@ final class ImagesListPresenter: ImagesListPresenterProtocol {
                 }
             }
         }
-
+    }
+    
+    private func changeAccessibilityIdentifierForButton(in cell: ImagesListCell) {
+        if cell.likeButton.accessibilityIdentifier == "like button off" {
+            cell.likeButton.accessibilityIdentifier = "like button on"
+        } else {
+            cell.likeButton.accessibilityIdentifier = "like button off"
+        }
     }
 }

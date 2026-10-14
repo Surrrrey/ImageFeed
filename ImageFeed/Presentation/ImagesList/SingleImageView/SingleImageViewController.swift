@@ -97,6 +97,7 @@ final class SingleImageViewController: UIViewController {
     private func configBackButton() {
         backButton.setImage(UIImage(resource: .backward), for: .normal)
         backButton.tintColor = UIColor(resource: .ypWhiteIOS)
+        backButton.accessibilityIdentifier = "navBackButtonWhiteButton"
         backButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(backButton)
