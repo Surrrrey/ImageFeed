@@ -3,9 +3,9 @@ import XCTest
 final class ImageFeedUITests: XCTestCase {
     private let app = XCUIApplication()
     
-    private let login = "sergei-novoselsev2013@yandex.ru" //Логин сюда
-    private let password = "46283355Unsplash" //Пароль сюда
-    private let unsplashLogin = "surrrrey" //Логин ансплеша сюда
+    private let login = "" //Логин сюда
+    private let password = "" //Пароль сюда
+    private let unsplashLogin = "" //Логин ансплеша сюда
     
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -32,7 +32,6 @@ final class ImageFeedUITests: XCTestCase {
         
         webView.swipeUp()
         sleep(3)
-        
         
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
