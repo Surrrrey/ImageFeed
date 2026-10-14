@@ -93,5 +93,7 @@ final class ImageFeedUITests: XCTestCase {
         app.buttons["logout button"].tap()
         
         app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"].tap()
+        
+        XCTAssertTrue(app.staticTexts["Войти"].exists)
     }
 }
