@@ -103,7 +103,7 @@ final class AuthViewController: UIViewController {
         
         navigationHandler = ViewControllerSwitcher()
         
-        navigationHandler?.pushViewController(self: self, webViewController)
+        navigationHandler?.pushViewController(from: self, webViewController)
     }
 }
 

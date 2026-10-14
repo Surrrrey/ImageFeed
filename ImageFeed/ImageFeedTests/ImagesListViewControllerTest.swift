@@ -20,7 +20,7 @@ final class ImagesListPresenterSpy: ImagesListPresenterProtocol  {
     }
     
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        
+        // do nothing
     }
     
     func updatePhotosArrayAndTableView() {
@@ -28,11 +28,11 @@ final class ImagesListPresenterSpy: ImagesListPresenterProtocol  {
     }
     
     func updatePhotosArray() {
-        
+        // do nothing
     }
     
     func changeLike(in cell: ImageFeed.ImagesListCell, on photoId: String, from isLiked: Bool, indexPath: IndexPath) {
-        
+        // do nothing
     }
 }
 

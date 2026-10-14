@@ -57,7 +57,7 @@ final class SplashViewController: UIViewController {
         
         navigationHandler = ViewControllerSwitcher()
             
-            navigationHandler?.presentNavigationRootController(self: self, authViewController, isHiddenNavigationBar: true)
+            navigationHandler?.presentNavigationRootController(from: self, authViewController, isHiddenNavigationBar: true)
     }
     
     private func switchToTabBarController() {

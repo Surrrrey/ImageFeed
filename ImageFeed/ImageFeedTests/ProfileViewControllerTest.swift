@@ -13,7 +13,7 @@ final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
     }
     
     func switchToSplashView() {
-        
+        // do nothing
     }
 }
 

@@ -159,7 +159,7 @@ extension ImagesListViewController: UITableViewDelegate {
         
         singleImageViewController.imageUrl = photo.fullImageURL
         
-        navigationHandler.presentViewController(self: self, singleImageViewController)
+        navigationHandler.presentViewController(from: self, singleImageViewController)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

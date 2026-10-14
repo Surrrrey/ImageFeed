@@ -5,7 +5,7 @@ private enum Constants {
     static let accessScope = "public+read_user+write_likes"
     
     static let defaultBaseURLString = "https://api.unsplash.com"
-    static let receivingCodeAdress = "/oauth/authorize/native"
+    static let receivingCodeAddress = "/oauth/authorize/native"
     
     static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
     static let unsplashTokenURLString = "https://unsplash.com/oauth/token"
@@ -23,7 +23,7 @@ struct AuthConfiguration {
     let redirectURI: String
     let accessScope: String
     let defaultBaseURLString: String
-    let receivingCodeAdress: String
+    let receivingCodeAddress: String
     let unsplashAuthorizeURLString: String
     let unsplashTokenURLString: String
     let userProfile: String
@@ -37,7 +37,7 @@ struct AuthConfiguration {
          redirectURI: String,
          accessScope: String,
          defaultBaseURLString: String,
-         receivingCodeAdress: String,
+         receivingCodeAddress: String,
          unsplashAuthorizeURLString: String,
          unsplashTokenURLString: String,
          userProfile: String,
@@ -50,7 +50,7 @@ struct AuthConfiguration {
         self.redirectURI = redirectURI
         self.accessScope = accessScope
         self.defaultBaseURLString = defaultBaseURLString
-        self.receivingCodeAdress = receivingCodeAdress
+        self.receivingCodeAddress = receivingCodeAddress
         self.unsplashAuthorizeURLString = unsplashAuthorizeURLString
         self.unsplashTokenURLString = unsplashTokenURLString
         self.userProfile = userProfile
@@ -66,7 +66,7 @@ struct AuthConfiguration {
                           redirectURI: Constants.redirectURI,
                           accessScope: Constants.accessScope,
                           defaultBaseURLString: Constants.defaultBaseURLString,
-                          receivingCodeAdress: Constants.receivingCodeAdress,
+                          receivingCodeAddress: Constants.receivingCodeAddress,
                           unsplashAuthorizeURLString: Constants.unsplashAuthorizeURLString,
                           unsplashTokenURLString: Constants.unsplashTokenURLString,
                           userProfile: Constants.userProfile,

@@ -13,7 +13,7 @@ final class WebViewPresenterSpy: WebViewPresenterProtocol {
     }
     
     func didUpdateProgressValue(_ newValue: Double) {
-        
+        // do nothing
     }
     
     func code(from url: URL) -> String? {
@@ -31,11 +31,11 @@ final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
     }
     
     func setProgressValue(_ newValue: Float) {
-        
+        // do nothing
     }
     
     func setProgressHidden(_ isHidden: Bool) {
-        
+        // do nothing
     }
     
     
@@ -110,7 +110,7 @@ final class WebViewTest: XCTestCase {
         let config = AuthConfiguration.standard
         let authHelper = AuthHelper(configuration: config)
         
-        guard var urlComponents = URLComponents(string: config.receivingCodeAdress) else {
+        guard var urlComponents = URLComponents(string: config.receivingCodeAddress) else {
             XCTFail("UrlComponents is nil")
             return }
         

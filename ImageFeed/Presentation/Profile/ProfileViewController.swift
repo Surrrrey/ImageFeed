@@ -168,7 +168,7 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
     // MARK: - Private Methods
     
     private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
-        var label = UILabel()
+        let label = UILabel()
         
         label.text = text
         label.textColor = color
