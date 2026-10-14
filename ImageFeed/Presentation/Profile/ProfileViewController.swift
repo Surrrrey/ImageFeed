@@ -1,12 +1,19 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+// MARK: - Protocol
+
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    var profileImageView: UIImageView { get set }
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
     
-    // MARK: - Layout
+    // MARK: - Layout Properties
     
-    private var profileImage = UIImage(systemName: "person.crop.circle.fill")
-    private var profileImageView = UIImageView()
+    let profileImage = UIImage(systemName: "person.crop.circle.fill")
+    var profileImageView = UIImageView()
     private let profileImageViewHeightAndWidth = 70.0
     
     private var profileName = UILabel()
@@ -16,6 +23,8 @@ final class ProfileViewController: UIViewController {
     private var button = UIButton()
     
     // MARK: - Properties
+    
+    var presenter: ProfileViewPresenterProtocol?
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -29,14 +38,13 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .ypBlackIOS
-        
-        if let profileImage { configurationProfileImage(image: profileImage) }
-        
+        if let profileImage {
+            configurationProfileImage(image: profileImage) }
         configureUILabels(with: profileService.profile)
         configurationButton()
         
         addObs()
-        updateAvatar()
+        presenter?.updateAvatar()
     }
     
     deinit {
@@ -109,6 +117,7 @@ final class ProfileViewController: UIViewController {
     private func configurationButton() {
         button.setImage(UIImage(resource: .exit), for: .normal)
         button.tintColor = .ypRedIOS
+        button.accessibilityIdentifier = "logout button"
         button.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(button)
@@ -126,10 +135,11 @@ final class ProfileViewController: UIViewController {
             let alert = AlertModel(title: "Пока, пока!",
                                    message: "Уверены, что хотите выйти?",
                                    firstButtonText: "Да",
-                                   cancelButtonText: "Нет") {
+                                   secondButtonText: "Нет",
+                                   firstCompletion: {
                 self.logoutService.logout()
-                self.switchToSplashView()
-            }
+                self.presenter?.switchToSplashView()
+            })
             
             AlertPresenter.shared.showTwoButtonAlert(in: self, model: alert)
         }
@@ -159,29 +169,12 @@ final class ProfileViewController: UIViewController {
     
     private func configLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
         let label = UILabel()
+        
         label.text = text
         label.textColor = color
         label.font = font
-        
+
         return label
-    }
-    
-    private func updateAvatar() {
-        guard let profileImageURL = ProfileImageService.shared.avatarURL else { return }
-        
-        profileImageView.kf.setImage(with: profileImageURL,
-                                     placeholder: profileImage)
-    }
-    
-    private func switchToSplashView() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        
-        let splashViewController = SplashViewController()
-        window.rootViewController = splashViewController
-        window.makeKeyAndVisible()
     }
 }
 
@@ -197,7 +190,7 @@ extension ProfileViewController {
                 queue: .main,
             ) { [weak self] _ in
                 guard let self else { return }
-                self.updateAvatar()
+                presenter?.updateAvatar()
             }
     }
 }

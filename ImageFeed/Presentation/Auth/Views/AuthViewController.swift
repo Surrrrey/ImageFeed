@@ -17,6 +17,7 @@ final class AuthViewController: UIViewController {
     private let buttonCornerRadius = 16.0
     
     // MARK: - Properties
+    private var navigationHandler: ViewControllerSwitcherProtocol?
     
     private let oAuth2Service = OAuth2FetchService.shared
     
@@ -64,6 +65,7 @@ final class AuthViewController: UIViewController {
         button.titleLabel?.textColor = .ypBlackIOS
         button.titleLabel?.font = buttonFont
         button.layer.cornerRadius = buttonCornerRadius
+        button.accessibilityIdentifier = "Authenticate"
         button.translatesAutoresizingMaskIntoConstraints = false
         
         button.addAction(UIAction { [weak self] _ in
@@ -91,17 +93,23 @@ final class AuthViewController: UIViewController {
     // MARK: - Private Methods
     
     private func showWebView() {
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
         let webViewController = WebViewViewController()
+        
+        webViewPresenter.view = webViewController
+        webViewController.presenter = webViewPresenter
         webViewController.delegate = self
-        navigationController?.navigationBar.isHidden = false
-        navigationController?.pushViewController(webViewController, animated: true)
+        
+        navigationHandler = ViewControllerSwitcher()
+        
+        navigationHandler?.pushViewController(from: self, webViewController)
     }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true)
         
         UIBlockingProgressHUD.show()
         
@@ -118,11 +126,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
             }
         }
     }
-    
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        vc.dismiss(animated: true)
-    }
-    
+        
     private func showAuthError() {
         let alert = AlertModel(title: "Что-то пошло не так(",
                                message: "Не удалось войти в систему",

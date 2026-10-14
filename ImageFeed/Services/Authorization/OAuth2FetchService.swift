@@ -16,6 +16,8 @@ final class OAuth2FetchService {
     private var sessionTask: URLSessionTask?
     private var lastCode: String?
     
+    private let configuration: AuthConfiguration = .standard
+    
     // MARK: - Public Methods
     
     func fetchOAuthToken(code: String,
@@ -69,14 +71,14 @@ final class OAuth2FetchService {
     
     private func makeAuthTokenRequest(code: String) -> URLRequest? {
         guard
-            var urlComponents = URLComponents(string: WebConstants.unsplashTokenURLString)
+            var urlComponents = URLComponents(string: configuration.unsplashTokenURLString)
         else { print("URLComponentsForTokenConfigureError")
             return nil }
         
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "client_secret", value: Constants.secretKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
+            URLQueryItem(name: "client_id", value: configuration.accessKey),
+            URLQueryItem(name: "client_secret", value: configuration.secretKey),
+            URLQueryItem(name: "redirect_uri", value: configuration.redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]

@@ -14,6 +14,8 @@ final class ProfileService {
     
     // MARK: - Properties
     
+    private let configuration: AuthConfiguration = .standard
+    
     private(set) var profile: ProfileUI?
     
     private var sessionTask: URLSessionTask?
@@ -63,7 +65,7 @@ final class ProfileService {
     
     private func makeProfileRequest(token: String) -> URLRequest? {
         guard
-            let profileUrl = URL(string: Constants.defaultBaseURLString + Constants.userProfile)
+            let profileUrl = URL(string: configuration.defaultBaseURLString + configuration.userProfile)
         else { print("URLForProfileRequestConfigureError")
             return nil }
         

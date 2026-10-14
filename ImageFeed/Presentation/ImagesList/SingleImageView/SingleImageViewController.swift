@@ -97,6 +97,7 @@ final class SingleImageViewController: UIViewController {
     private func configBackButton() {
         backButton.setImage(UIImage(resource: .backward), for: .normal)
         backButton.tintColor = UIColor(resource: .ypWhiteIOS)
+        backButton.accessibilityIdentifier = "navBackButtonWhiteButton"
         backButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(backButton)
@@ -136,9 +137,10 @@ final class SingleImageViewController: UIViewController {
         let alert = AlertModel(title: "Что-то пошло не так",
                                message: "Попробовать ещё раз?",
                                firstButtonText: "Повторить",
-                               cancelButtonText: "Не надо") { [weak self] in
+                               secondButtonText: "Не надо",
+                               firstCompletion: { [weak self] in
             self?.loadedFullImage()
-        }
+        })
         
         AlertPresenter.shared.showTwoButtonAlert(in: self,
                                                  model: alert)

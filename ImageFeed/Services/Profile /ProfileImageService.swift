@@ -14,6 +14,8 @@ final class ProfileImageService {
     
     // MARK: - Properties
     
+    private let configuration: AuthConfiguration = .standard
+    
     private(set) var avatarURL: URL?
     
     private var sessionTask: URLSessionTask?
@@ -75,7 +77,7 @@ final class ProfileImageService {
     
     private func makeProfileImageRequest(_ username: String, token: String) -> URLRequest? {
         guard
-            let avatarURL = URL(string: Constants.defaultBaseURLString + Constants.userPublicProfile + username)
+            let avatarURL = URL(string: configuration.defaultBaseURLString + configuration.userPublicProfile + username)
         else { print("AvatarUrlError")
             return nil }
         

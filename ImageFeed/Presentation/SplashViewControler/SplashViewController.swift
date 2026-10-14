@@ -10,6 +10,8 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Properties
     
+    private var navigationHandler: ViewControllerSwitcherProtocol?
+    
     private let storage = OAuth2TokenStorage.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
@@ -53,23 +55,17 @@ final class SplashViewController: UIViewController {
         let authViewController = AuthViewController()
         authViewController.delegate = self
         
-        let navigationController = UINavigationController(rootViewController: authViewController)
-        
-        navigationController.modalPresentationStyle = .fullScreen
-        navigationController.navigationBar.isHidden = true
-        
-        present(navigationController, animated: true)
+        navigationHandler = ViewControllerSwitcher()
+            
+            navigationHandler?.presentNavigationRootController(from: self, authViewController, isHiddenNavigationBar: true)
     }
     
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
-        }
-        
         let tabBarController = TabBarController()
-        window.rootViewController = tabBarController
-        window.makeKeyAndVisible()
+        
+        navigationHandler = ViewControllerSwitcher()
+        
+        navigationHandler?.switchToNewRootController(newController: tabBarController)
     }
 }
 
@@ -89,7 +85,7 @@ extension SplashViewController {
         guard let token = storage.accessToken else { return }
         
         UIBlockingProgressHUD.show()
-
+        
         profileService.fetchProfile(token: token) { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             guard let self else { return }
@@ -97,10 +93,23 @@ extension SplashViewController {
             switch result {
             case .success(let profile):
                 profileImageService.fetchProfileImageURL(token: token, username: profile.login) { _ in }
-                switchToTabBarController()
+                self.switchToTabBarController()
             case .failure(let error):
                 print(error)
-                //TODO: Обработать ошибку получения профиля
+                let alertModel = AlertModel(
+                    title: "Что-то пошлло не так(",
+                    message: "Ошибка получения профиля",
+                    firstButtonText: "Попробовать снова",
+                    secondButtonText: "Выйти из профиля",
+                    firstCompletion: { [weak self] in
+                        guard let self else { return }
+                        self.fetchProfile() },
+                    secondCompletion: { [weak self] in
+                        guard let self else { return }
+                        ProfileLogoutService.shared.logout()
+                        showAuthView()
+                    })
+                AlertPresenter.shared.showTwoButtonAlert(in: self, model: alertModel)
                 break
             }
         }
